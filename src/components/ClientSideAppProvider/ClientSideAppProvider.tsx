@@ -2,6 +2,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ConfigProvider } from 'antd';
+import ptBR from 'antd/locale/pt_BR';
 import { useServerInsertedHTML } from 'next/navigation';
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -13,6 +14,8 @@ export const ClientSideAppProvider: React.FC<{
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
   const [queryClient] = useState(() => new QueryClient());
 
+  queryClient.setDefaultOptions({ queries: { refetchOnWindowFocus: false } });
+
   useServerInsertedHTML(() => {
     const styles = styledComponentsStyleSheet.getStyleElement();
 
@@ -23,6 +26,8 @@ export const ClientSideAppProvider: React.FC<{
 
   return (
     <ConfigProvider
+      locale={ptBR}
+      componentSize="large"
       theme={{
         token: {
           colorPrimary: '#212330',

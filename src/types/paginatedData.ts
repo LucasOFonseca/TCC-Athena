@@ -1,4 +1,4 @@
-import { GenericStatus } from '.';
+import { GenericStatus } from './genericStatus';
 
 export interface PaginatedRequestParams {
   query?: string;

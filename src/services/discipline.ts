@@ -1,8 +1,8 @@
+import { Discipline } from '@athena-types/discipline';
 import {
-  Discipline,
   PaginatedDataResponse,
   PaginatedRequestParams,
-} from '../types';
+} from '@athena-types/paginatedData';
 import Api from './api';
 
 const baseUrl = '/discipline';

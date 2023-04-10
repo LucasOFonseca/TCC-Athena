@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
 interface ClientComponentLoaderProps {
-  loader: React.ReactNode;
+  loader?: React.ReactNode;
   children: React.ReactNode;
 }
 
 export const ClientComponentLoader: React.FC<ClientComponentLoaderProps> = ({
-  loader,
+  loader = null,
   children,
 }) => {
   const [isLoading, setIsLoading] = useState(true);

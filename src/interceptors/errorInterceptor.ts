@@ -1,6 +1,6 @@
+import { ErrorMessages } from '@athena-types/messages';
 import { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
-import { ErrorMessages } from '../types';
 
 export function errorInterceptor(error: any) {
   const res = error.response as AxiosResponse;
