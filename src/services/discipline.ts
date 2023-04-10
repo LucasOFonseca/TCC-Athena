@@ -1,4 +1,5 @@
 import { Discipline } from '@athena-types/discipline';
+import { GenericStatus } from '@athena-types/genericStatus';
 import {
   PaginatedDataResponse,
   PaginatedRequestParams,
@@ -13,4 +14,11 @@ async function getPaginated(
   return Api.get(baseUrl, { params }).then((res) => res.data);
 }
 
-export const disciplineService = { getPaginated };
+async function changeStatus(
+  guid: string,
+  status: GenericStatus
+): Promise<Discipline> {
+  return Api.patch(`${baseUrl}/${guid}`, { status }).then((res) => res.data);
+}
+
+export const disciplineService = { getPaginated, changeStatus };

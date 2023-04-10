@@ -1,11 +1,14 @@
 'use client';
 
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Discipline } from '@athena-types/discipline';
+import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { StatusButton } from '@components/StatusButton';
-import { Button, Table, Tooltip } from 'antd';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button, Modal, Table, Tooltip } from 'antd';
 import styled from 'styled-components';
+import { disciplineService } from '../../../../../services/discipline';
 
 const TableContainer = styled.div`
   border-radius: 8px;
@@ -30,6 +33,45 @@ interface DisciplinesTableProps {
 export const DisciplinesTable: React.FC<DisciplinesTableProps> = ({
   disciplines,
 }) => {
+  const queryClient = useQueryClient();
+  const { confirm } = Modal;
+
+  const changeStatus = useMutation({
+    mutationFn: (params: any) =>
+      disciplineService.changeStatus(params.guid, params.status),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['disciplines']);
+    },
+  });
+
+  const handleChangeStatus = (guid: string, status: GenericStatus) => {
+    confirm({
+      centered: true,
+      title: `Alterar status para ${
+        status === GenericStatus.active ? '"inativo"' : '"ativo"'
+      }?`,
+      icon: <ExclamationCircleOutlined />,
+      content: `Após confirmar o cadastro ficará ${
+        status === GenericStatus.active
+          ? 'indisponível para uso até que o status retorne para "ativo".'
+          : 'disponível para uso.'
+      }`,
+      okText: 'Alterar',
+      cancelButtonProps: {
+        danger: true,
+      },
+      onOk() {
+        changeStatus.mutate({
+          guid,
+          status:
+            status === GenericStatus.active
+              ? GenericStatus.inactive
+              : GenericStatus.active,
+        });
+      },
+    });
+  };
+
   return (
     <ClientComponentLoader>
       <TableContainer>
@@ -51,7 +93,12 @@ export const DisciplinesTable: React.FC<DisciplinesTableProps> = ({
               align: 'right',
               render: (_, record) => (
                 <>
-                  <StatusButton currentStatus={record.status} />
+                  <StatusButton
+                    currentStatus={record.status}
+                    onClick={() =>
+                      handleChangeStatus(record.guid as string, record.status)
+                    }
+                  />
 
                   <Tooltip placement="bottom" title="Editar">
                     <Button

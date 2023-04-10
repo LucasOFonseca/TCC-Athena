@@ -31,10 +31,12 @@ const StyledButton = styled(Button)<StyledButtonProps>`
 
 interface StatusButtonProps {
   currentStatus: GenericStatus;
+  onClick: () => void;
 }
 
 export const StatusButton: React.FC<StatusButtonProps> = ({
   currentStatus,
+  onClick,
 }) => {
   const { useToken } = theme;
   const { token } = useToken();
@@ -47,6 +49,7 @@ export const StatusButton: React.FC<StatusButtonProps> = ({
         type="primary"
         token={token}
         status={currentStatus}
+        onClick={onClick}
         icon={
           currentStatus === GenericStatus.active ? (
             <EyeFilled />
