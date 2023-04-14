@@ -1,4 +1,5 @@
 import { ClientSideAppProvider } from '@components/ClientSideAppProvider';
+import { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,8 +11,11 @@ const roboto = Roboto({
   variable: '--font-family',
 });
 
-export const metadata = {
-  title: 'Athena - Gestão Acadêmica',
+export const metadata: Metadata = {
+  title: {
+    default: 'Athena | Gestão Acadêmica',
+    template: 'Athena | %s',
+  },
   description:
     'App de gestão acadêmica desenvolvido como Trabalho de Conclusão do Curso de Sistemas de Informação',
 };
