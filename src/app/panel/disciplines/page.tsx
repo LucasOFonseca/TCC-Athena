@@ -93,6 +93,7 @@ export default function DisciplinesPage() {
           icon={<PlusOutlined />}
           tooltip="Adicionar nova disciplina"
           type="primary"
+          style={{ right: 16, bottom: 16 }}
           onClick={() => handleOpenDisciplineDialogForm()}
         />
       </ClientComponentLoader>

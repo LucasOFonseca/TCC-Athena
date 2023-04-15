@@ -8,11 +8,11 @@ const Main = styled.main`
   display: flex;
   justify-content: center;
   margin: 64px 0 0 260px;
-  padding: 16px;
+  padding: 16px 16px 72px;
 
   @media (max-width: 900px) {
     margin: 64px 0 0;
-    padding: 16px 8px;
+    padding: 16px 8px 72px;
   }
 
   & > div {
