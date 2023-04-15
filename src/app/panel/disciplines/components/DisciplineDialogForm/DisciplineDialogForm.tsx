@@ -57,14 +57,23 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
     validateFields()
       .then((data) => {
         if (disciplineToEdit) {
-          editDiscipline.mutate({
-            ...disciplineToEdit,
-            ...data,
-          });
+          editDiscipline
+            .mutateAsync({
+              ...disciplineToEdit,
+              ...data,
+            })
+            .then(() => {
+              handleCancel();
+            })
+            .catch(() => {});
         } else {
-          createDiscipline.mutate(data);
+          createDiscipline
+            .mutateAsync(data)
+            .then(() => {
+              handleCancel();
+            })
+            .catch(() => {});
         }
-        handleCancel();
       })
       .catch(() => {
         Swal.fire('Ops!', ErrorMessages.requiredFields, 'error');
