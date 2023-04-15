@@ -76,7 +76,7 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
         }
       })
       .catch(() => {
-        Swal.fire('Ops!', ErrorMessages.requiredFields, 'error');
+        Swal.fire('Ops!', ErrorMessages.MSGE01, 'error');
       });
   };
 
@@ -130,7 +130,11 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
           required
           label="Nome"
           name="name"
-          rules={[{ required: true, message: '' }]}
+          rules={[
+            { required: true, message: '' },
+            { type: 'string', min: 3, message: ErrorMessages.MSGE08 },
+            { type: 'string', max: 120, message: ErrorMessages.MSGE09 },
+          ]}
         >
           <Input size="large" placeholder="Dê um nome para a disciplina" />
         </Form.Item>
@@ -154,7 +158,10 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
           required
           label="Ementa"
           name="syllabus"
-          rules={[{ required: true, message: '' }]}
+          rules={[
+            { required: true, message: '' },
+            { type: 'string', min: 3, message: ErrorMessages.MSGE08 },
+          ]}
         >
           <TextArea
             showCount

@@ -20,13 +20,13 @@ async function getPaginated(
 
 async function create(data: CreateDisciplineRequestData): Promise<Discipline> {
   return Api.post(baseUrl, data, {
-    headers: { 'success-message': SuccessMessages.created },
+    headers: { 'success-message': SuccessMessages.MSGS03 },
   }).then((res) => res.data);
 }
 
 async function update(data: Discipline): Promise<Discipline> {
   return Api.put(`${baseUrl}/${data.guid}`, data, {
-    headers: { 'success-message': SuccessMessages.updated },
+    headers: { 'success-message': SuccessMessages.MSGS02 },
   }).then((res) => res.data);
 }
 
@@ -37,7 +37,7 @@ async function changeStatus(
   return Api.patch(
     `${baseUrl}/${guid}`,
     { status },
-    { headers: { 'success-message': SuccessMessages.statusChanged } }
+    { headers: { 'success-message': SuccessMessages.MSGS04 } }
   ).then((res) => res.data);
 }
 
