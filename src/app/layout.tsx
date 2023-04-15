@@ -1,14 +1,33 @@
 import { ClientSideAppProvider } from '@components/ClientSideAppProvider';
 import { Metadata } from 'next';
-import { Open_Sans } from 'next/font/google';
+import localFont from 'next/font/local';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
-const font = Open_Sans({
-  weight: '500',
-  subsets: ['latin'],
-  variable: '--font-family',
+const font = localFont({
+  src: [
+    {
+      path: '../../public/fonts/OpenSans-Regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/OpenSans-Medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/OpenSans-SemiBold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/OpenSans-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
 });
 
 export const metadata: Metadata = {
