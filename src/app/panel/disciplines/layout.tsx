@@ -1,11 +1,23 @@
+import { getQueryClient } from '@helpers/utils';
+import { disciplineService } from '@services/discipline';
+import { Hydrate, dehydrate } from '@tanstack/react-query';
+
 export const metadata = {
   title: 'Disciplinas',
 };
 
-export default function DisciplinesLayout({
+export default async function DisciplinesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery(['disciplines', 1, 'all', ''], {
+    queryFn: () => disciplineService.getPaginated(),
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+
+  return <Hydrate state={dehydratedState}>{children}</Hydrate>;
 }

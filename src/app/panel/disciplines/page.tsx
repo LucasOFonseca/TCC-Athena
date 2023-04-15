@@ -1,10 +1,14 @@
 'use client';
 
+import { PlusOutlined } from '@ant-design/icons';
+import { Discipline } from '@athena-types/discipline';
 import { GenericStatus } from '@athena-types/genericStatus';
+import { ClientComponentLoader } from '@components/ClientComponentLoader';
+import { disciplineService } from '@services/discipline';
 import { useQuery } from '@tanstack/react-query';
-import { Pagination } from 'antd';
+import { FloatButton, Pagination } from 'antd';
 import { useState } from 'react';
-import { disciplineService } from '../../../services/discipline';
+import { DisciplineDialogForm } from './components/DisciplineDialogForm';
 import { DisciplinesTable } from './components/DsiciplinesTable';
 import { PageHeader } from './components/PageHeader';
 
@@ -24,15 +28,44 @@ export default function DisciplinesPage() {
       }),
   });
 
+  const [disciplineToEdit, setDisciplineToEdit] = useState<Discipline>();
+  const [showDisciplineDialogForm, setShowDisciplineDialogForm] =
+    useState(false);
+
+  const handleOpenDisciplineDialogForm = (discipline?: Discipline) => {
+    if (discipline) {
+      setDisciplineToEdit(discipline);
+    }
+
+    setShowDisciplineDialogForm(true);
+  };
+
+  const handleCloseDisciplineDialogForm = () => {
+    setShowDisciplineDialogForm(false);
+
+    if (disciplineToEdit) {
+      setDisciplineToEdit(undefined);
+    }
+  };
+
   return (
     <>
+      <DisciplineDialogForm
+        open={showDisciplineDialogForm}
+        disciplineToEdit={disciplineToEdit}
+        onClose={handleCloseDisciplineDialogForm}
+      />
+
       <PageHeader
         statusFilter={statusFilter}
         onChangeSearch={(value) => setSearch(value)}
         onChangeStatusFilter={(value) => setStatusFilter(value)}
       />
 
-      <DisciplinesTable disciplines={data?.data ?? []} />
+      <DisciplinesTable
+        disciplines={data?.data ?? []}
+        onEdit={handleOpenDisciplineDialogForm}
+      />
 
       {data && (
         <div
@@ -43,15 +76,26 @@ export default function DisciplinesPage() {
             marginTop: 24,
           }}
         >
-          <Pagination
-            hideOnSinglePage
-            responsive
-            current={page}
-            total={data.totalPages * 10}
-            onChange={(newPage) => setPage(newPage)}
-          />
+          <ClientComponentLoader>
+            <Pagination
+              hideOnSinglePage
+              responsive
+              current={page}
+              total={data.totalPages * 10}
+              onChange={(newPage) => setPage(newPage)}
+            />
+          </ClientComponentLoader>
         </div>
       )}
+
+      <ClientComponentLoader>
+        <FloatButton
+          icon={<PlusOutlined />}
+          tooltip="Adicionar nova disciplina"
+          type="primary"
+          onClick={() => handleOpenDisciplineDialogForm()}
+        />
+      </ClientComponentLoader>
     </>
   );
 }

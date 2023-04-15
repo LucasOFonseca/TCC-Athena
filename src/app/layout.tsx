@@ -1,12 +1,12 @@
 import { ClientSideAppProvider } from '@components/ClientSideAppProvider';
 import { Metadata } from 'next';
-import { Roboto } from 'next/font/google';
+import { Open_Sans } from 'next/font/google';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
-const roboto = Roboto({
-  weight: '400',
+const font = Open_Sans({
+  weight: '500',
   subsets: ['latin'],
   variable: '--font-family',
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-br" className={roboto.className}>
+    <html lang="pt-br" className={font.className}>
       <body>
         <ClientSideAppProvider>{children}</ClientSideAppProvider>
       </body>

@@ -7,3 +7,9 @@ export interface Discipline {
   syllabus: string;
   workload: number;
 }
+
+export interface CreateDisciplineRequestData {
+  name: string;
+  syllabus: string;
+  workload: number;
+}

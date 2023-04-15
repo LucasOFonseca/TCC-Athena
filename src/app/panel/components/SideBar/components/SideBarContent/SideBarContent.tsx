@@ -54,6 +54,7 @@ export const SideBarContent: React.FC = () => {
     <>
       <LogoContainer>
         <Image
+          priority
           width={170}
           height={38}
           src="/white-logo.svg"

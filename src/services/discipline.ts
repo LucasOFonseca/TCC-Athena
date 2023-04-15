@@ -1,4 +1,7 @@
-import { Discipline } from '@athena-types/discipline';
+import {
+  CreateDisciplineRequestData,
+  Discipline,
+} from '@athena-types/discipline';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { SuccessMessages } from '@athena-types/messages';
 import {
@@ -15,6 +18,18 @@ async function getPaginated(
   return Api.get(baseUrl, { params }).then((res) => res.data);
 }
 
+async function create(data: CreateDisciplineRequestData): Promise<Discipline> {
+  return Api.post(baseUrl, data, {
+    headers: { 'success-message': SuccessMessages.created },
+  }).then((res) => res.data);
+}
+
+async function update(data: Discipline): Promise<Discipline> {
+  return Api.put(`${baseUrl}/${data.guid}`, data, {
+    headers: { 'success-message': SuccessMessages.updated },
+  }).then((res) => res.data);
+}
+
 async function changeStatus(
   guid: string,
   status: GenericStatus
@@ -26,4 +41,4 @@ async function changeStatus(
   ).then((res) => res.data);
 }
 
-export const disciplineService = { getPaginated, changeStatus };
+export const disciplineService = { getPaginated, create, update, changeStatus };

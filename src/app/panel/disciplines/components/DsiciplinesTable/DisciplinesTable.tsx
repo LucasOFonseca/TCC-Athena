@@ -28,10 +28,12 @@ const TableContainer = styled.div`
 
 interface DisciplinesTableProps {
   disciplines: Discipline[];
+  onEdit: (discipline: Discipline) => void;
 }
 
 export const DisciplinesTable: React.FC<DisciplinesTableProps> = ({
   disciplines,
+  onEdit,
 }) => {
   const queryClient = useQueryClient();
   const { confirm } = Modal;
@@ -39,7 +41,7 @@ export const DisciplinesTable: React.FC<DisciplinesTableProps> = ({
   const changeStatus = useMutation({
     mutationFn: (params: any) =>
       disciplineService.changeStatus(params.guid, params.status),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['disciplines']);
     },
   });
@@ -106,6 +108,7 @@ export const DisciplinesTable: React.FC<DisciplinesTableProps> = ({
                       shape="circle"
                       type="text"
                       style={{ marginLeft: 8 }}
+                      onClick={() => onEdit(record)}
                     >
                       <EditOutlined />
                     </Button>
