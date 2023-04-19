@@ -26,6 +26,7 @@ export default function DisciplinesPage() {
         query: search,
         page,
       }),
+    staleTime: Infinity,
   });
 
   const [disciplineToEdit, setDisciplineToEdit] = useState<Discipline>();

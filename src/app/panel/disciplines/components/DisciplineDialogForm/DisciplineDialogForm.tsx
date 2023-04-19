@@ -32,15 +32,63 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
   const createDiscipline = useMutation({
     mutationFn: (data: CreateDisciplineRequestData) =>
       disciplineService.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['disciplines']);
+    onSuccess: (newItem) => {
+      queryClient.setQueriesData(
+        {
+          predicate: ({ queryKey }) =>
+            queryKey[0] === 'disciplines' &&
+            (queryKey[1] as number) === 1 &&
+            (queryKey[2] === 'all' || queryKey[2] === 'active') &&
+            queryKey[3] === '',
+        },
+        (data: any) => {
+          const newArrayOfData = [newItem, ...data.data];
+
+          newArrayOfData.pop();
+
+          return { ...data, data: newArrayOfData };
+        }
+      );
+
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === 'disciplines' &&
+          ((queryKey[1] as number) > 1 ||
+            queryKey[2] === 'inactive' ||
+            queryKey[3] !== ''),
+      });
     },
   });
 
   const editDiscipline = useMutation({
     mutationFn: (data: Discipline) => disciplineService.update(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['disciplines']);
+    onSuccess: (updatedData) => {
+      queryClient.setQueriesData(
+        {
+          predicate: ({ queryKey }) =>
+            queryKey[0] === 'disciplines' && queryKey[3] === '',
+        },
+        (data: any) => {
+          const itemIndex: number = data.data.findIndex(
+            (item: Discipline) => item.guid === updatedData.guid
+          );
+
+          if (itemIndex === -1) {
+            return data;
+          }
+
+          const newArrayOfData = [...data.data];
+
+          newArrayOfData[itemIndex] = updatedData;
+
+          return { ...data, data: newArrayOfData };
+        }
+      );
+
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === 'disciplines' && queryKey[3] !== '',
+      });
     },
   });
 

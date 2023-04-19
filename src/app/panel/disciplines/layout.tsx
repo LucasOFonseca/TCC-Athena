@@ -15,6 +15,7 @@ export default async function DisciplinesLayout({
 
   await queryClient.prefetchQuery(['disciplines', 1, 'all', ''], {
     queryFn: () => disciplineService.getPaginated(),
+    staleTime: Infinity,
   });
 
   const dehydratedState = dehydrate(queryClient);
