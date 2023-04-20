@@ -28,7 +28,7 @@ const OpenSideBarButton = styled(Button)`
     color: white !important;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: var(--breakpoint-md)) {
     display: none;
   }
 `;

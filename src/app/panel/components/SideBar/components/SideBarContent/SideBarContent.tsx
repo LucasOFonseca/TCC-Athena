@@ -57,7 +57,7 @@ export const SideBarContent: React.FC = () => {
           priority
           width={170}
           height={38}
-          src="/white-logo.svg"
+          src="/svg/white-logo.svg"
           alt="Athena logo"
         />
       </LogoContainer>
