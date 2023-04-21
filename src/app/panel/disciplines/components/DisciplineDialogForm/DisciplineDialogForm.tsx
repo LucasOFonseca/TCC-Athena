@@ -10,7 +10,43 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Form, Input, InputNumber, Modal } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useEffect } from 'react';
+import styled from 'styled-components';
 import Swal from 'sweetalert2';
+
+const StyledModal = styled(Modal)`
+  @media (max-width: 600px) {
+    max-width: unset;
+    width: 100% !important;
+    height: 100%;
+
+    .ant-modal-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      border-radius: 0;
+      padding: 0;
+
+      & > button {
+        top: 24px;
+      }
+
+      .ant-modal-title {
+        padding: 24px 16px 0;
+      }
+
+      .ant-modal-body {
+        height: 100%;
+        padding: 8px 16px;
+        overflow-y: auto;
+      }
+
+      .ant-modal-footer {
+        padding: 8px 16px 16px;
+        margin-top: 0;
+      }
+    }
+  }
+`;
 
 interface DisciplineDialogFormProps {
   open: boolean;
@@ -139,7 +175,7 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
   }, [disciplineToEdit]); // eslint-disable-line
 
   return (
-    <Modal
+    <StyledModal
       centered
       open={open}
       onCancel={handleCancel}
@@ -220,6 +256,6 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
           />
         </Form.Item>
       </Form>
-    </Modal>
+    </StyledModal>
   );
 };
