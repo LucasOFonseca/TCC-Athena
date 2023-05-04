@@ -119,12 +119,18 @@ export const DisciplinesTable: React.FC<DisciplinesTableProps> = ({
           ]}
           dataSource={disciplines}
           expandable={{
-            expandedRowRender: ({ workload, syllabus }) => (
+            expandedRowRender: ({ workload, syllabus, weeklyClasses }) => (
               <div style={{ paddingLeft: 8 }}>
-                <span>
-                  <strong>Carga horária:</strong>{' '}
-                  {`${workload} hora${workload > 1 ? 's' : ''}`}
-                </span>
+                <div style={{ display: 'flex', gap: 32 }}>
+                  <span>
+                    <strong>Carga horária:</strong>{' '}
+                    {`${workload} hora${workload > 1 ? 's' : ''}`}
+                  </span>
+
+                  <span>
+                    <strong>Aulas por semana:</strong> {weeklyClasses}
+                  </span>
+                </div>
 
                 <div style={{ marginTop: 16 }}>
                   <strong>Ementa</strong>

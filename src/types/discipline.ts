@@ -6,10 +6,12 @@ export interface Discipline {
   name: string;
   syllabus: string;
   workload: number;
+  weeklyClasses: number;
 }
 
 export interface CreateDisciplineRequestData {
   name: string;
   syllabus: string;
   workload: number;
+  weeklyClasses: number;
 }

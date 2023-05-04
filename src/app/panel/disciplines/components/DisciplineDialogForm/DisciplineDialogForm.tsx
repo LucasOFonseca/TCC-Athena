@@ -169,6 +169,7 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
       setFieldsValue({
         name: disciplineToEdit.name,
         workload: disciplineToEdit.workload,
+        weeklyClasses: disciplineToEdit.weeklyClasses,
         syllabus: disciplineToEdit.syllabus,
       });
     }
@@ -234,6 +235,20 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
             min={1}
             max={999}
             addonAfter="Horas"
+            style={{ width: '100%' }}
+          />
+        </Form.Item>
+
+        <Form.Item
+          required
+          label="Aulas por semana"
+          name="weeklyClasses"
+          rules={[{ required: true, message: '' }]}
+        >
+          <InputNumber
+            size="large"
+            min={1}
+            max={35}
             style={{ width: '100%' }}
           />
         </Form.Item>
