@@ -4,6 +4,7 @@ export enum SuccessMessages {
   MSGS03 = 'Criado com sucesso!',
   MSGS04 = 'Status alterado com sucesso!',
   MSGS05 = 'Removido com sucesso!',
+  MSGS06 = 'Enviado com sucesso!',
 }
 
 export enum ErrorMessages {
@@ -18,4 +19,7 @@ export enum ErrorMessages {
   MSGE09 = 'Campo excede a quantidade máxima permitida de caracteres',
   MSGE10 = 'Valor do campo menor que o mínimo permitido',
   MSGE11 = 'Valor do campo maior que o máximo permitido',
+  MSGE12 = 'CPF inválido',
+  MSGE13 = 'Credenciais inválidas',
+  MSGE14 = 'Acesso não autorizado',
 }
