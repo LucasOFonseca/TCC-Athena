@@ -1,27 +1,25 @@
 'use client';
 
 import { PlusOutlined } from '@ant-design/icons';
-import { Discipline } from '@athena-types/discipline';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
-import { disciplineService } from '@services/discipline';
+import { employeeService } from '@services/employee';
 import { useQuery } from '@tanstack/react-query';
 import { FloatButton, Pagination } from 'antd';
 import { useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { DisciplineDialogForm } from './components/DisciplineDialogForm';
-import { DisciplinesTable } from './components/DsiciplinesTable';
+import { EmployeesTable } from './components/EmployeesTable';
 
-export default function DisciplinesPage() {
+export default function EmployeesPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<GenericStatus | 'all'>(
     'all'
   );
 
-  const { data } = useQuery(['disciplines', page, statusFilter, search], {
+  const { data } = useQuery(['employees', page, statusFilter, search], {
     queryFn: () =>
-      disciplineService.getPaginated({
+      employeeService.getPaginated({
         filterByStatus: statusFilter !== 'all' ? statusFilter : undefined,
         query: search,
         page,
@@ -29,45 +27,16 @@ export default function DisciplinesPage() {
     staleTime: Infinity,
   });
 
-  const [disciplineToEdit, setDisciplineToEdit] = useState<Discipline>();
-  const [showDisciplineDialogForm, setShowDisciplineDialogForm] =
-    useState(false);
-
-  const handleOpenDisciplineDialogForm = (discipline?: Discipline) => {
-    if (discipline) {
-      setDisciplineToEdit(discipline);
-    }
-
-    setShowDisciplineDialogForm(true);
-  };
-
-  const handleCloseDisciplineDialogForm = () => {
-    setShowDisciplineDialogForm(false);
-
-    if (disciplineToEdit) {
-      setDisciplineToEdit(undefined);
-    }
-  };
-
   return (
     <>
-      <DisciplineDialogForm
-        open={showDisciplineDialogForm}
-        disciplineToEdit={disciplineToEdit}
-        onClose={handleCloseDisciplineDialogForm}
-      />
-
       <PageHeader
-        title="Disciplinas"
+        title="Colaboradores"
         statusFilter={statusFilter}
         onChangeSearch={(value) => setSearch(value)}
         onChangeStatusFilter={(value) => setStatusFilter(value)}
       />
 
-      <DisciplinesTable
-        disciplines={data?.data ?? []}
-        onEdit={handleOpenDisciplineDialogForm}
-      />
+      <EmployeesTable employees={data?.data ?? []} onEdit={() => {}} />
 
       {data && (
         <div
@@ -93,10 +62,9 @@ export default function DisciplinesPage() {
       <ClientComponentLoader>
         <FloatButton
           icon={<PlusOutlined />}
-          tooltip="Adicionar nova disciplina"
+          tooltip="Cadastrar colaborador"
           type="primary"
           style={{ right: 16, bottom: 16 }}
-          onClick={() => handleOpenDisciplineDialogForm()}
         />
       </ClientComponentLoader>
     </>

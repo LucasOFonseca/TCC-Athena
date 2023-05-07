@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeFilled, ReadFilled } from '@ant-design/icons';
+import { ContactsOutlined, HomeFilled, ReadFilled } from '@ant-design/icons';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { Menu, MenuProps } from 'antd';
 import Image from 'next/image';
@@ -47,6 +47,7 @@ export const SideBarContent: React.FC = () => {
 
   const items: MenuItem[] = [
     getItem('Home', '/panel', <HomeFilled />),
+    getItem('Colaboradores', '/panel/employees', <ContactsOutlined />),
     getItem('Disciplinas', '/panel/disciplines', <ReadFilled />),
   ];
 

@@ -56,12 +56,14 @@ const FiltersContainer = styled.div`
 `;
 
 interface PageHeaderProps {
+  title: string;
   statusFilter: GenericStatus | 'all';
   onChangeStatusFilter: (status: GenericStatus | 'all') => void;
   onChangeSearch: (search: string) => void;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
+  title,
   statusFilter,
   onChangeStatusFilter,
   onChangeSearch,
@@ -77,7 +79,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <Container>
-      <h4>Disciplinas</h4>
+      <h4>{title}</h4>
 
       <ClientComponentLoader
         loader={
