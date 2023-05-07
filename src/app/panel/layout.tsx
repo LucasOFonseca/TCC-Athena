@@ -1,5 +1,8 @@
 'use client';
 
+import { useUser } from '@stores/useUser';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Header } from './components/Header';
 import { SideBar } from './components/SideBar';
@@ -26,6 +29,16 @@ export default function PanelLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { push } = useRouter();
+
+  const { accessToken } = useUser();
+
+  useEffect(() => {
+    if (!accessToken) {
+      push('/');
+    }
+  }, [accessToken]); // eslint-disable-line
+
   return (
     <>
       <Header />

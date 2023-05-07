@@ -15,18 +15,20 @@ const baseUrl = '/discipline';
 async function getPaginated(
   params?: PaginatedRequestParams
 ): Promise<PaginatedDataResponse<Discipline>> {
-  return Api.get(baseUrl, { params }).then((res) => res.data);
+  return Api.get(baseUrl, { params, headers: { authHeader: true } }).then(
+    (res) => res.data
+  );
 }
 
 async function create(data: CreateDisciplineRequestData): Promise<Discipline> {
   return Api.post(baseUrl, data, {
-    headers: { 'success-message': SuccessMessages.MSGS03 },
+    headers: { authHeader: true, 'success-message': SuccessMessages.MSGS03 },
   }).then((res) => res.data);
 }
 
 async function update(data: Discipline): Promise<Discipline> {
   return Api.put(`${baseUrl}/${data.guid}`, data, {
-    headers: { 'success-message': SuccessMessages.MSGS02 },
+    headers: { authHeader: true, 'success-message': SuccessMessages.MSGS02 },
   }).then((res) => res.data);
 }
 
@@ -37,7 +39,7 @@ async function changeStatus(
   return Api.patch(
     `${baseUrl}/${guid}`,
     { status },
-    { headers: { 'success-message': SuccessMessages.MSGS04 } }
+    { headers: { authHeader: true, 'success-message': SuccessMessages.MSGS04 } }
   ).then((res) => res.data);
 }
 

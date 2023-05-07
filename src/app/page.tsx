@@ -1,11 +1,15 @@
 'use client';
 
 import { LockFilled, UserOutlined } from '@ant-design/icons';
+import { ErrorMessages } from '@athena-types/messages';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { SquareLoader } from '@components/SquareLoader';
+import { authService } from '@services/auth';
+import { useUser } from '@stores/useUser';
 import { Button, Form, Input } from 'antd';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const Aside = styled.aside`
@@ -78,6 +82,33 @@ const Main = styled.main`
 export default function Home() {
   const { push } = useRouter();
 
+  const { accessToken, setAccessToken } = useUser();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const initialValues = {
+    email: '',
+    password: '',
+  };
+
+  const onFinish = ({ email, password }: typeof initialValues) => {
+    setIsLoading(true);
+
+    authService
+      .login(email, password)
+      .then((token) => {
+        setAccessToken(token);
+        push('/panel');
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      push('/panel');
+    }
+  }, [accessToken]); // eslint-disable-line
+
   return (
     <div style={{ display: 'flex' }}>
       <Aside>
@@ -122,12 +153,32 @@ export default function Home() {
           <Stack>
             <p>Faça login para continuar</p>
 
-            <Form size="large">
-              <Form.Item required>
+            <Form
+              size="large"
+              initialValues={initialValues}
+              onFinish={onFinish}
+              disabled={isLoading}
+            >
+              <Form.Item
+                required
+                name="email"
+                rules={[
+                  { required: true, message: '' },
+                  { type: 'email', message: ErrorMessages.MSGE06 },
+                ]}
+              >
                 <Input placeholder="E-mail" prefix={<UserOutlined />} />
               </Form.Item>
 
-              <Form.Item required>
+              <Form.Item
+                required
+                name="password"
+                rules={[
+                  { required: true, message: '' },
+                  { type: 'string', min: 8, message: ErrorMessages.MSGE08 },
+                  { type: 'string', max: 16, message: ErrorMessages.MSGE09 },
+                ]}
+              >
                 <Input.Password placeholder="Senha" prefix={<LockFilled />} />
               </Form.Item>
 
@@ -135,7 +186,7 @@ export default function Home() {
                 block
                 type="primary"
                 htmlType="submit"
-                onClick={() => push('/panel')}
+                loading={isLoading}
               >
                 Entrar
               </Button>
