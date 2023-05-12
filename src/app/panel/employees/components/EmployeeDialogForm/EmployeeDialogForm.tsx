@@ -159,7 +159,6 @@ export const EmployeeDialogForm: React.FC<EmployeeDialogFormProps> = ({
           'roles',
         ]);
 
-        dataToSend.birthdate = dayjs(dataToSend.birthDate).toISOString();
         dataToSend.cpf = dataToSend.cpf.replace(/\D/g, '');
         dataToSend.phoneNumber = dataToSend.phoneNumber.replace(/\D/g, '');
         dataToSend.address.cep = dataToSend.address.cep.replace(/\D/g, '');
