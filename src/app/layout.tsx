@@ -1,12 +1,12 @@
 import { ClientSideAppProvider } from '@components/ClientSideAppProvider';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Metadata } from 'next';
 import localFont from 'next/font/local';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
-moment.locale('pt-br');
+dayjs.locale('pt-br');
 
 const font = localFont({
   src: [

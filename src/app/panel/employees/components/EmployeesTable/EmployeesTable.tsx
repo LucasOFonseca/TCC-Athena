@@ -7,7 +7,7 @@ import { formatCpf, formatPhoneNumber, getRoleProps } from '@helpers/utils';
 import { employeeService } from '@services/employee';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Divider, Modal, Table, Tag, Tooltip } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import styled from 'styled-components';
 
 const TableContainer = styled.div`
@@ -164,7 +164,7 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
 
                   <p>
                     <strong>Data de nascimento:</strong>{' '}
-                    {moment(birthdate).format('DD/MM/YYYY')}
+                    {dayjs(birthdate).format('DD/MM/YYYY')}
                   </p>
                 </div>
 

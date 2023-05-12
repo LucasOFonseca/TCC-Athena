@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FloatButton, Pagination } from 'antd';
 import { useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
+import { EmployeeDialogForm } from './components/EmployeeDialogForm';
 import { EmployeesTable } from './components/EmployeesTable';
 
 export default function EmployeesPage() {
@@ -27,8 +28,23 @@ export default function EmployeesPage() {
     staleTime: Infinity,
   });
 
+  const [showEmployeeDialogForm, setShowEmployeeDialogForm] = useState(false);
+
+  const handleOpenEmployeeDialogForm = () => {
+    setShowEmployeeDialogForm(true);
+  };
+
+  const handleCloseEmployeeDialogForm = () => {
+    setShowEmployeeDialogForm(false);
+  };
+
   return (
     <>
+      <EmployeeDialogForm
+        open={showEmployeeDialogForm}
+        onClose={handleCloseEmployeeDialogForm}
+      />
+
       <PageHeader
         title="Colaboradores"
         statusFilter={statusFilter}
@@ -65,6 +81,7 @@ export default function EmployeesPage() {
           tooltip="Cadastrar colaborador"
           type="primary"
           style={{ right: 16, bottom: 16 }}
+          onClick={handleOpenEmployeeDialogForm}
         />
       </ClientComponentLoader>
     </>

@@ -61,9 +61,9 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
 }) => {
   const queryClient = useQueryClient();
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<Discipline>();
 
-  const { resetFields, setFieldsValue, validateFields, getFieldsValue } = form;
+  const { resetFields, setFieldsValue, validateFields } = form;
 
   const createDiscipline = useMutation({
     mutationFn: (data: CreateDisciplineRequestData) =>
@@ -80,7 +80,7 @@ export const DisciplineDialogForm: React.FC<DisciplineDialogFormProps> = ({
         (data: any) => {
           const newArrayOfData = [newItem, ...data.data];
 
-          newArrayOfData.pop();
+          if (data.data.length === 10) newArrayOfData.pop();
 
           return { ...data, data: newArrayOfData };
         }
