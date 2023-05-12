@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const Loader = styled.span`
   height: 5px;
   width: 5px;
-  color: #3f4257;
+  color: ${({ color }) => color ?? '#3f4257'};
   box-shadow: -10px -10px 0 5px, -10px -10px 0 5px, -10px -10px 0 5px,
     -10px -10px 0 5px;
   animation: loader-38 6s infinite;
@@ -66,6 +66,10 @@ const Loader = styled.span`
   }
 `;
 
-export const SquareLoader: React.FC = () => {
-  return <Loader />;
+interface SquareLoaderProps {
+  color?: string;
+}
+
+export const SquareLoader: React.FC<SquareLoaderProps> = ({ color }) => {
+  return <Loader color={color} />;
 };

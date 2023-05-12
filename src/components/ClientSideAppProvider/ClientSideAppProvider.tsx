@@ -1,4 +1,5 @@
 'use client';
+import { FullScreenLoader } from '@components/FullScreenLoader';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ConfigProvider } from 'antd';
@@ -46,6 +47,7 @@ export const ClientSideAppProvider: React.FC<{
         )}
 
         <ToastContainer limit={3} position="bottom-center" />
+        <FullScreenLoader />
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ConfigProvider>

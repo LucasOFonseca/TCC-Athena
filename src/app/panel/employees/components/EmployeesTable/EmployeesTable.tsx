@@ -1,10 +1,15 @@
-import { EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  ExclamationCircleOutlined,
+  MailOutlined,
+} from '@ant-design/icons';
 import { Employee } from '@athena-types/employee';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { StatusButton } from '@components/StatusButton';
 import { formatCpf, formatPhoneNumber, getRoleProps } from '@helpers/utils';
 import { employeeService } from '@services/employee';
+import { useProgressIndicator } from '@stores/useProgressIndicator';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Divider, Modal, Table, Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
@@ -38,6 +43,9 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
   const queryClient = useQueryClient();
   const { confirm } = Modal;
 
+  const { addProgressIndicatorItem, removeProgressIndicatorItem } =
+    useProgressIndicator();
+
   const changeStatus = useMutation({
     mutationFn: (params: any) =>
       employeeService.changeStatus(params.guid, params.status),
@@ -45,6 +53,17 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
       queryClient.invalidateQueries(['employees']);
     },
   });
+
+  const handleResetPassword = (guid: string) => {
+    addProgressIndicatorItem({
+      id: 'reset-password',
+      message: 'Reenviando e-mail...',
+    });
+
+    employeeService.resetPassword(guid).finally(() => {
+      removeProgressIndicatorItem('reset-password');
+    });
+  };
 
   const handleChangeStatus = (guid: string, status: GenericStatus) => {
     confirm({
@@ -115,7 +134,7 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
             {
               dataIndex: 'actions',
               key: 'actions',
-              width: 150,
+              width: 180,
               align: 'right',
               render: (_, record) => (
                 <>
@@ -135,6 +154,18 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
                       onClick={() => onEdit(record)}
                     >
                       <EditOutlined />
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip placement="bottom" title="Reenviar dados de acesso">
+                    <Button
+                      size="middle"
+                      shape="circle"
+                      type="text"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => handleResetPassword(record.guid as string)}
+                    >
+                      <MailOutlined />
                     </Button>
                   </Tooltip>
                 </>

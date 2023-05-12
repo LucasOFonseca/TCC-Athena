@@ -41,7 +41,7 @@ async function changeStatus(
 }
 
 async function resetPassword(guid: string): Promise<Employee> {
-  return Api.patch(
+  return Api.put(
     `${baseUrl}/${guid}/reset-password`,
     {},
     {
