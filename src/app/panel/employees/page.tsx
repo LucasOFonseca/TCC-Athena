@@ -1,6 +1,7 @@
 'use client';
 
 import { PlusOutlined } from '@ant-design/icons';
+import { Employee } from '@athena-types/employee';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { employeeService } from '@services/employee';
@@ -28,9 +29,14 @@ export default function EmployeesPage() {
     staleTime: Infinity,
   });
 
+  const [employeeToEdit, setEmployeeToEdit] = useState<Employee>();
   const [showEmployeeDialogForm, setShowEmployeeDialogForm] = useState(false);
 
-  const handleOpenEmployeeDialogForm = () => {
+  const handleOpenEmployeeDialogForm = (employee?: Employee) => {
+    if (employee) {
+      setEmployeeToEdit(employee);
+    }
+
     setShowEmployeeDialogForm(true);
   };
 
@@ -42,6 +48,7 @@ export default function EmployeesPage() {
     <>
       <EmployeeDialogForm
         open={showEmployeeDialogForm}
+        employeeToEdit={employeeToEdit}
         onClose={handleCloseEmployeeDialogForm}
       />
 
@@ -52,7 +59,10 @@ export default function EmployeesPage() {
         onChangeStatusFilter={(value) => setStatusFilter(value)}
       />
 
-      <EmployeesTable employees={data?.data ?? []} onEdit={() => {}} />
+      <EmployeesTable
+        employees={data?.data ?? []}
+        onEdit={handleOpenEmployeeDialogForm}
+      />
 
       {data && (
         <div
@@ -81,7 +91,7 @@ export default function EmployeesPage() {
           tooltip="Cadastrar colaborador"
           type="primary"
           style={{ right: 16, bottom: 16 }}
-          onClick={handleOpenEmployeeDialogForm}
+          onClick={() => handleOpenEmployeeDialogForm()}
         />
       </ClientComponentLoader>
     </>

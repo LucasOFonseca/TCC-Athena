@@ -11,7 +11,7 @@ import { employeeService } from '@services/employee';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Form, Modal, Steps } from 'antd';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 import { EmployeeAddressStep } from './components/EmployeeAddressStep';
@@ -72,7 +72,7 @@ export const EmployeeDialogForm: React.FC<EmployeeDialogFormProps> = ({
 
   const [form] = Form.useForm<Employee>();
 
-  const { resetFields, validateFields, getFieldsValue } = form;
+  const { resetFields, setFieldsValue, validateFields, getFieldsValue } = form;
 
   const createEmployee = useMutation({
     mutationFn: (data: CreateEmployeeRequestData) =>
@@ -105,6 +105,38 @@ export const EmployeeDialogForm: React.FC<EmployeeDialogFormProps> = ({
     },
   });
 
+  const editEmployee = useMutation({
+    mutationFn: (data: Employee) => employeeService.update(data),
+    onSuccess: (updatedData) => {
+      queryClient.setQueriesData(
+        {
+          predicate: ({ queryKey }) =>
+            queryKey[0] === 'employees' && queryKey[3] === '',
+        },
+        (data: any) => {
+          const itemIndex: number = data.data.findIndex(
+            (item: Employee) => item.guid === updatedData.guid
+          );
+
+          if (itemIndex === -1) {
+            return data;
+          }
+
+          const newArrayOfData = [...data.data];
+
+          newArrayOfData[itemIndex] = updatedData;
+
+          return { ...data, data: newArrayOfData };
+        }
+      );
+
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === 'employee' && queryKey[3] !== '',
+      });
+    },
+  });
+
   const handleCancel = () => {
     resetFields();
     setIsFirstStepValid(false);
@@ -133,21 +165,46 @@ export const EmployeeDialogForm: React.FC<EmployeeDialogFormProps> = ({
         dataToSend.address.cep = dataToSend.address.cep.replace(/\D/g, '');
 
         if (employeeToEdit) {
-          return;
+          editEmployee
+            .mutateAsync({
+              ...employeeToEdit,
+              ...dataToSend,
+            })
+            .then(() => {
+              handleCancel();
+            })
+            .catch(() => {});
+        } else {
+          createEmployee
+            .mutateAsync(dataToSend)
+            .then(() => {
+              handleCancel();
+            })
+            .catch(() => {});
         }
-
-        createEmployee
-          .mutateAsync(dataToSend)
-          .then(() => {
-            handleCancel();
-          })
-          .catch(() => {});
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         Swal.fire('Ops!', ErrorMessages.MSGE01, 'error');
       });
   };
+
+  useEffect(() => {
+    if (employeeToEdit) {
+      setIsFirstStepValid(true);
+      setIsSecondStepValid(true);
+
+      setFieldsValue({
+        guid: employeeToEdit.guid,
+        name: employeeToEdit.name,
+        cpf: employeeToEdit.cpf,
+        birthdate: dayjs(employeeToEdit.birthdate) as any,
+        email: employeeToEdit.email,
+        phoneNumber: employeeToEdit.phoneNumber,
+        address: employeeToEdit.address,
+        roles: employeeToEdit.roles,
+      });
+    }
+  }, [employeeToEdit]);
 
   return (
     <StyledModal
