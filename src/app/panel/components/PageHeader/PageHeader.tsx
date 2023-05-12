@@ -91,7 +91,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       >
         <FiltersContainer>
           <Input
-            placeholder="Pesquisar disciplina"
+            placeholder="Pesquisar"
             prefix={<SearchOutlined />}
             onChange={(e) => debouncedSearch(e.target.value)}
           />
