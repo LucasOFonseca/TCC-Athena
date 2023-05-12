@@ -42,6 +42,10 @@ export default function EmployeesPage() {
 
   const handleCloseEmployeeDialogForm = () => {
     setShowEmployeeDialogForm(false);
+
+    if (employeeToEdit) {
+      setEmployeeToEdit(undefined);
+    }
   };
 
   return (
