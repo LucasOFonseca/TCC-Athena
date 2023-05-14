@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  AppstoreFilled,
   BookOutlined,
   ContactsOutlined,
   HomeFilled,
@@ -55,6 +56,7 @@ export const SideBarContent: React.FC = () => {
     getItem('Colaboradores', '/panel/employees', <ContactsOutlined />),
     getItem('Disciplinas', '/panel/disciplines', <ReadFilled />),
     getItem('Cursos', '/panel/courses', <BookOutlined />),
+    getItem('Salas de aula', '/panel/classrooms', <AppstoreFilled />),
   ];
 
   return (

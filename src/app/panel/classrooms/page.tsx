@@ -1,27 +1,27 @@
 'use client';
 
 import { PlusOutlined } from '@ant-design/icons';
-import { Course } from '@athena-types/course';
+import { Classroom } from '@athena-types/classroom';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
-import { courseService } from '@services/course';
+import { classroomService } from '@services/classroom';
 import { useQuery } from '@tanstack/react-query';
 import { FloatButton, Pagination } from 'antd';
 import { useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { CourseDialogForm } from './components/CourseDialogForm';
-import { CoursesTable } from './components/CoursesTable';
+import { ClassroomDialogForm } from './components/ClassroomDialogForm';
+import { ClassroomsTable } from './components/ClassroomsTable';
 
-export default function CoursesPage() {
+export default function ClassroomsPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<GenericStatus | 'all'>(
     'all'
   );
 
-  const { data } = useQuery(['courses', page, statusFilter, search], {
+  const { data } = useQuery(['classrooms', page, statusFilter, search], {
     queryFn: () =>
-      courseService.getPaginated({
+      classroomService.getPaginated({
         filterByStatus: statusFilter !== 'all' ? statusFilter : undefined,
         query: search,
         page,
@@ -29,43 +29,43 @@ export default function CoursesPage() {
     staleTime: Infinity,
   });
 
-  const [courseToEdit, setCourseToEdit] = useState<Course>();
-  const [showCourseDialogForm, setShowCourseDialogForm] = useState(false);
+  const [classroomToEdit, setClassroomToEdit] = useState<Classroom>();
+  const [showClassroomDialogForm, setShowClassroomDialogForm] = useState(false);
 
-  const handleOpenCourseDialogForm = (course?: Course) => {
-    if (course) {
-      setCourseToEdit(course);
+  const handleOpenClassroomDialogForm = (classroom?: Classroom) => {
+    if (classroom) {
+      setClassroomToEdit(classroom);
     }
 
-    setShowCourseDialogForm(true);
+    setShowClassroomDialogForm(true);
   };
 
-  const handleCloseCourseDialogForm = () => {
-    setShowCourseDialogForm(false);
+  const handleCloseClassroomDialogForm = () => {
+    setShowClassroomDialogForm(false);
 
-    if (courseToEdit) {
-      setCourseToEdit(undefined);
+    if (classroomToEdit) {
+      setClassroomToEdit(undefined);
     }
   };
 
   return (
     <>
-      <CourseDialogForm
-        open={showCourseDialogForm}
-        courseToEdit={courseToEdit}
-        onClose={handleCloseCourseDialogForm}
+      <ClassroomDialogForm
+        open={showClassroomDialogForm}
+        classroomToEdit={classroomToEdit}
+        onClose={handleCloseClassroomDialogForm}
       />
 
       <PageHeader
-        title="Cursos"
+        title="Salas de aula"
         statusFilter={statusFilter}
         onChangeSearch={(value) => setSearch(value)}
         onChangeStatusFilter={(value) => setStatusFilter(value)}
       />
 
-      <CoursesTable
-        courses={data?.data ?? []}
-        onEdit={handleOpenCourseDialogForm}
+      <ClassroomsTable
+        classrooms={data?.data ?? []}
+        onEdit={handleOpenClassroomDialogForm}
       />
 
       {data && (
@@ -92,10 +92,10 @@ export default function CoursesPage() {
       <ClientComponentLoader>
         <FloatButton
           icon={<PlusOutlined />}
-          tooltip="Adicionar novo curso"
+          tooltip="Adicionar nova sala de aula"
           type="primary"
           style={{ right: 16, bottom: 16 }}
-          onClick={() => handleOpenCourseDialogForm()}
+          onClick={() => handleOpenClassroomDialogForm()}
         />
       </ClientComponentLoader>
     </>

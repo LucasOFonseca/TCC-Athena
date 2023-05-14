@@ -1,10 +1,10 @@
 'use client';
 
-import { Course, CreateCourseRequestData } from '@athena-types/course';
+import { Classroom, CreateClassroomRequestData } from '@athena-types/classroom';
 import { ErrorMessages } from '@athena-types/messages';
-import { courseService } from '@services/course';
+import { classroomService } from '@services/classroom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, InputNumber, Modal } from 'antd';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
@@ -44,30 +44,31 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-interface CourseDialogFormProps {
+interface ClassroomDialogFormProps {
   open: boolean;
-  courseToEdit?: Course;
+  classroomToEdit?: Classroom;
   onClose: () => void;
 }
 
-export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
+export const ClassroomDialogForm: React.FC<ClassroomDialogFormProps> = ({
   open,
-  courseToEdit,
+  classroomToEdit,
   onClose,
 }) => {
   const queryClient = useQueryClient();
 
-  const [form] = Form.useForm<Course>();
+  const [form] = Form.useForm<Classroom>();
 
   const { resetFields, setFieldsValue, validateFields } = form;
 
-  const createCourse = useMutation({
-    mutationFn: (data: CreateCourseRequestData) => courseService.create(data),
+  const createClassroom = useMutation({
+    mutationFn: (data: CreateClassroomRequestData) =>
+      classroomService.create(data),
     onSuccess: (newItem) => {
       queryClient.setQueriesData(
         {
           predicate: ({ queryKey }) =>
-            queryKey[0] === 'courses' &&
+            queryKey[0] === 'classrooms' &&
             (queryKey[1] as number) === 1 &&
             (queryKey[2] === 'all' || queryKey[2] === 'active') &&
             queryKey[3] === '',
@@ -83,7 +84,7 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
 
       queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
-          queryKey[0] === 'courses' &&
+          queryKey[0] === 'classrooms' &&
           ((queryKey[1] as number) > 1 ||
             queryKey[2] === 'inactive' ||
             queryKey[3] !== ''),
@@ -91,17 +92,17 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
     },
   });
 
-  const editCourse = useMutation({
-    mutationFn: (data: Course) => courseService.update(data),
+  const editClassroom = useMutation({
+    mutationFn: (data: Classroom) => classroomService.update(data),
     onSuccess: (updatedData) => {
       queryClient.setQueriesData(
         {
           predicate: ({ queryKey }) =>
-            queryKey[0] === 'courses' && queryKey[3] === '',
+            queryKey[0] === 'classrooms' && queryKey[3] === '',
         },
         (data: any) => {
           const itemIndex: number = data.data.findIndex(
-            (item: Course) => item.guid === updatedData.guid
+            (item: Classroom) => item.guid === updatedData.guid
           );
 
           if (itemIndex === -1) {
@@ -118,13 +119,13 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
 
       queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
-          queryKey[0] === 'courses' && queryKey[3] !== '',
+          queryKey[0] === 'classrooms' && queryKey[3] !== '',
       });
     },
   });
 
   const handleCancel = () => {
-    if (createCourse.isLoading || editCourse.isLoading) {
+    if (createClassroom.isLoading || editClassroom.isLoading) {
       return;
     }
 
@@ -135,10 +136,10 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
   const handleSubmit = () => {
     validateFields()
       .then((data) => {
-        if (courseToEdit) {
-          editCourse
+        if (classroomToEdit) {
+          editClassroom
             .mutateAsync({
-              ...courseToEdit,
+              ...classroomToEdit,
               ...data,
             })
             .then(() => {
@@ -146,7 +147,7 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
             })
             .catch(() => {});
         } else {
-          createCourse
+          createClassroom
             .mutateAsync(data)
             .then(() => {
               handleCancel();
@@ -160,19 +161,19 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
   };
 
   useEffect(() => {
-    if (courseToEdit) {
+    if (classroomToEdit) {
       setFieldsValue({
-        name: courseToEdit.name,
+        name: classroomToEdit.name,
       });
     }
-  }, [courseToEdit]); // eslint-disable-line
+  }, [classroomToEdit]); // eslint-disable-line
 
   return (
     <StyledModal
       centered
       open={open}
       onCancel={handleCancel}
-      title={`${courseToEdit ? 'Editar' : 'Adicionar'} curso`}
+      title={`${classroomToEdit ? 'Editar' : 'Adicionar'} sala de aula`}
       footer={[
         <Button
           danger
@@ -184,7 +185,7 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
         </Button>,
         <Button
           key="submit"
-          loading={createCourse.isLoading || editCourse.isLoading}
+          loading={createClassroom.isLoading || editClassroom.isLoading}
           type="primary"
           style={{ width: 'calc(50% - 4px)' }}
           onClick={handleSubmit}
@@ -196,10 +197,11 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
       <Form
         layout="vertical"
         size="middle"
-        disabled={createCourse.isLoading || editCourse.isLoading}
+        disabled={createClassroom.isLoading || editClassroom.isLoading}
         form={form}
         initialValues={{
           name: '',
+          capacity: 40,
         }}
       >
         <Form.Item
@@ -212,7 +214,21 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
             { type: 'string', max: 120, message: ErrorMessages.MSGE09 },
           ]}
         >
-          <Input size="large" placeholder="Dê um nome para o curso" />
+          <Input size="large" placeholder="Sala 01" />
+        </Form.Item>
+
+        <Form.Item
+          required
+          label="Capacidade"
+          name="capacity"
+          rules={[{ required: true, message: '' }]}
+        >
+          <InputNumber
+            size="large"
+            min={1}
+            max={100}
+            style={{ width: '100%' }}
+          />
         </Form.Item>
       </Form>
     </StyledModal>

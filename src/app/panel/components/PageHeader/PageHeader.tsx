@@ -15,6 +15,10 @@ const Container = styled.div`
   justify-content: space-between;
   margin-bottom: 32px;
 
+  h4 {
+    min-width: max-content;
+  }
+
   @media (max-width: 600px) {
     flex-direction: column;
     align-items: flex-start;
