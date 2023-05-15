@@ -3,15 +3,15 @@ import {
   ExclamationCircleOutlined,
   MailOutlined,
 } from '@ant-design/icons';
-import { Employee } from '@athena-types/employee';
 import { GenericStatus } from '@athena-types/genericStatus';
+import { Student } from '@athena-types/student';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { StatusButton } from '@components/StatusButton';
-import { formatCpf, formatPhoneNumber, getRoleProps } from '@helpers/utils';
-import { employeeService } from '@services/employee';
+import { formatCpf, formatPhoneNumber } from '@helpers/utils';
+import { studentService } from '@services/student';
 import { useProgressIndicator } from '@stores/useProgressIndicator';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Divider, Modal, Table, Tag, Tooltip } from 'antd';
+import { Button, Divider, Modal, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 
@@ -31,13 +31,13 @@ const TableContainer = styled.div`
   }
 `;
 
-interface EmployeesTableProps {
-  employees: Employee[];
-  onEdit: (employee: Employee) => void;
+interface StudentsTableProps {
+  students: Student[];
+  onEdit: (student: Student) => void;
 }
 
-export const EmployeesTable: React.FC<EmployeesTableProps> = ({
-  employees,
+export const StudentsTable: React.FC<StudentsTableProps> = ({
+  students,
   onEdit,
 }) => {
   const queryClient = useQueryClient();
@@ -48,9 +48,9 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
 
   const changeStatus = useMutation({
     mutationFn: (params: any) =>
-      employeeService.changeStatus(params.guid, params.status),
+      studentService.changeStatus(params.guid, params.status),
     onSuccess: () => {
-      queryClient.invalidateQueries(['employees']);
+      queryClient.invalidateQueries(['students']);
     },
   });
 
@@ -60,7 +60,7 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
       message: 'Reenviando e-mail...',
     });
 
-    employeeService.resetPassword(guid).finally(() => {
+    studentService.resetPassword(guid).finally(() => {
       removeProgressIndicatorItem('reset-password');
     });
   };
@@ -100,36 +100,13 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
           size="small"
           rowKey="guid"
           pagination={false}
-          dataSource={employees}
+          dataSource={students}
           columns={[
             {
               title: 'Nome',
               dataIndex: 'name',
               key: 'name',
               align: 'left',
-            },
-            {
-              title: 'Atribuições',
-              dataIndex: 'roles',
-              key: 'roles',
-              align: 'left',
-              render: (_, record) => (
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {record.roles.map((role) => {
-                    const roleProps = getRoleProps(role);
-
-                    return (
-                      <Tag
-                        key={role}
-                        color={roleProps.color}
-                        style={{ textTransform: 'uppercase', fontWeight: 700 }}
-                      >
-                        {roleProps.translated}
-                      </Tag>
-                    );
-                  })}
-                </div>
-              ),
             },
             {
               dataIndex: 'actions',

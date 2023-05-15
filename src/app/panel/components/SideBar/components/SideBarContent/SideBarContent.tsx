@@ -6,6 +6,7 @@ import {
   ContactsOutlined,
   HomeFilled,
   ReadFilled,
+  UserOutlined,
 } from '@ant-design/icons';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { Menu, MenuProps } from 'antd';
@@ -54,6 +55,7 @@ export const SideBarContent: React.FC = () => {
   const items: MenuItem[] = [
     getItem('Home', '/panel', <HomeFilled />),
     getItem('Colaboradores', '/panel/employees', <ContactsOutlined />),
+    getItem('Alunos', '/panel/students', <UserOutlined />),
     getItem('Disciplinas', '/panel/disciplines', <ReadFilled />),
     getItem('Cursos', '/panel/courses', <BookOutlined />),
     getItem('Salas de aula', '/panel/classrooms', <AppstoreFilled />),

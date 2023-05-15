@@ -1,39 +1,35 @@
 import { Address } from '@athena-types/address';
 import { Employee } from '@athena-types/employee';
 import { ErrorMessages } from '@athena-types/messages';
+import { Student } from '@athena-types/student';
 import { addressService } from '@services/address';
 import { useQuery } from '@tanstack/react-query';
 import { Checkbox, Form, FormInstance, Input, Select } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
 import { useState } from 'react';
 
-interface EmployeeAddressStepProps {
-  employeeForm: FormInstance<Employee>;
+interface AddressFormStepProps {
+  externalForm: FormInstance<Employee | Student>;
   onStepValidate: (isValid: boolean) => void;
 }
 
-export const EmployeeAddressStep: React.FC<EmployeeAddressStepProps> = ({
-  employeeForm,
+export const AddressFormStep: React.FC<AddressFormStepProps> = ({
+  externalForm,
   onStepValidate,
 }) => {
   const [form] = Form.useForm<Address>();
 
-  const {
-    getFieldsValue,
-    getFieldValue,
-    getFieldsError,
-    setFieldsValue,
-    setFieldValue,
-  } = form;
+  const { getFieldsValue, getFieldsError, setFieldsValue, setFieldValue } =
+    form;
 
   const [lastCep, setLastCep] = useState(
-    employeeForm.getFieldValue('address')?.cep ?? ''
+    externalForm.getFieldValue('address')?.cep ?? ''
   );
   const [currentSelectedState, setCurrentSelectedState] = useState(
-    employeeForm.getFieldValue('address')?.state ?? ''
+    externalForm.getFieldValue('address')?.state ?? ''
   );
   const [noNumber, setNoNumber] = useState(
-    employeeForm.getFieldValue('address')?.number === 's/n' ?? false
+    externalForm.getFieldValue('address')?.number === 's/n' ?? false
   );
 
   const { data: states, isLoading: isLoadingStates } = useQuery(
@@ -58,7 +54,7 @@ export const EmployeeAddressStep: React.FC<EmployeeAddressStepProps> = ({
       layout="vertical"
       size="middle"
       form={form}
-      initialValues={employeeForm.getFieldValue('address')}
+      initialValues={externalForm.getFieldValue('address')}
       onValuesChange={(fields) => {
         if (fields.state && fields.state !== currentSelectedState) {
           setFieldValue('city', undefined);
@@ -111,7 +107,7 @@ export const EmployeeAddressStep: React.FC<EmployeeAddressStepProps> = ({
 
         onStepValidate(isValid);
 
-        employeeForm.setFieldValue('address', getFieldsValue());
+        externalForm.setFieldValue('address', getFieldsValue());
       }}
     >
       <Form.Item

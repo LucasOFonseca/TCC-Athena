@@ -1,18 +1,20 @@
 import { Employee } from '@athena-types/employee';
 import { ErrorMessages } from '@athena-types/messages';
+import { Student } from '@athena-types/student';
 import { validateCPF } from '@helpers/validators';
 import { DatePicker, Form, FormInstance, Input } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
 import dayjs from 'dayjs';
 
-interface EmployeePersonalInfoStepProps {
-  form: FormInstance<Employee>;
+interface PersonalInfoFormStepProps {
+  form: FormInstance<Employee | Student>;
   onStepValidate: (isValid: boolean) => void;
 }
 
-export const EmployeePersonalInfoStep: React.FC<
-  EmployeePersonalInfoStepProps
-> = ({ form, onStepValidate }) => {
+export const PersonalInfoFormStep: React.FC<PersonalInfoFormStepProps> = ({
+  form,
+  onStepValidate,
+}) => {
   const { getFieldsValue, getFieldsError } = form;
 
   return (
@@ -45,7 +47,7 @@ export const EmployeePersonalInfoStep: React.FC<
           { type: 'string', max: 120, message: ErrorMessages.MSGE09 },
         ]}
       >
-        <Input size="large" placeholder="Nome do colaborador" />
+        <Input size="large" />
       </Form.Item>
 
       <Form.Item
