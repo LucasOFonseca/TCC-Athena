@@ -13,11 +13,15 @@ import Api from './api';
 const baseUrl = '/discipline';
 
 async function getPaginated(
-  params?: PaginatedRequestParams
+  params?: PaginatedRequestParams,
+  token?: string
 ): Promise<PaginatedDataResponse<Discipline>> {
-  return Api.get(baseUrl, { params, headers: { authHeader: true } }).then(
-    (res) => res.data
-  );
+  return Api.get(baseUrl, {
+    params,
+    headers: token
+      ? { Authorization: `Bearer ${token}` }
+      : { authHeader: true },
+  }).then((res) => res.data);
 }
 
 async function create(data: CreateDisciplineRequestData): Promise<Discipline> {
