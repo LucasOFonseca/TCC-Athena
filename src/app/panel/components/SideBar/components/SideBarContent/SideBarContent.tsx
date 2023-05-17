@@ -8,10 +8,15 @@ import {
   ReadFilled,
   UserOutlined,
 } from '@ant-design/icons';
+import { EmployeeRole } from '@athena-types/employee';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
+import { getAuthorizedRoutesByRoles } from '@helpers/utils/getAuthorizedRoutesByRoles';
 import { Menu, MenuProps } from 'antd';
+import { getCookie } from 'cookies-next';
+import decode from 'jwt-decode';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
@@ -52,6 +57,13 @@ export const SideBarContent: React.FC = () => {
   const { push } = useRouter();
   const pathname = usePathname();
 
+  const accessToken = getCookie('alohomora');
+
+  const { roles } =
+    typeof window === 'undefined'
+      ? { roles: [EmployeeRole.principal] }
+      : (decode(accessToken as string) as { roles: EmployeeRole[] });
+
   const items: MenuItem[] = [
     getItem('Home', '/panel', <HomeFilled />),
     getItem('Colaboradores', '/panel/employees', <ContactsOutlined />),
@@ -60,6 +72,20 @@ export const SideBarContent: React.FC = () => {
     getItem('Cursos', '/panel/courses', <BookOutlined />),
     getItem('Salas de aula', '/panel/classrooms', <AppstoreFilled />),
   ];
+
+  const [itemsToShow, setItemsToShow] = useState(items);
+
+  useEffect(() => {
+    if (typeof accessToken === 'string') {
+      setItemsToShow(
+        items.filter((item) =>
+          getAuthorizedRoutesByRoles(roles).includes(
+            (item?.key as string) ?? ''
+          )
+        )
+      );
+    }
+  }, [accessToken]);
 
   return (
     <>
@@ -81,7 +107,7 @@ export const SideBarContent: React.FC = () => {
               highlightColor="#595c6e"
               height={40}
             >
-              {items.map((item) => (
+              {itemsToShow.map((item) => (
                 <Skeleton key={item?.key} />
               ))}
             </SkeletonTheme>
@@ -90,7 +116,7 @@ export const SideBarContent: React.FC = () => {
       >
         <Menu
           mode="inline"
-          items={items}
+          items={itemsToShow}
           defaultSelectedKeys={[pathname]}
           onClick={({ key }) => push(key)}
         />
