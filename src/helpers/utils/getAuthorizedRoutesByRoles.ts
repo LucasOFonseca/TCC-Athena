@@ -8,6 +8,7 @@ const baseRoutes = [
   `${prefix}/disciplines`,
   `${prefix}/courses`,
   `${prefix}/classrooms`,
+  `${prefix}/class-schedules`,
 ];
 
 const authorizedRoutesByRole: { [key in EmployeeRole]: string[] } = {
