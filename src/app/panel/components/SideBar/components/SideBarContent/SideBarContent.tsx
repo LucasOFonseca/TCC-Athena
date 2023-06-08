@@ -5,6 +5,7 @@ import {
   BookOutlined,
   ClockCircleOutlined,
   ContactsOutlined,
+  FileTextOutlined,
   HomeFilled,
   ReadFilled,
   UserOutlined,
@@ -73,6 +74,7 @@ export const SideBarContent: React.FC = () => {
     getItem('Cursos', '/panel/courses', <BookOutlined />),
     getItem('Salas de aula', '/panel/classrooms', <AppstoreFilled />),
     getItem('Horários', '/panel/class-schedules', <ClockCircleOutlined />),
+    getItem('Matrizes', '/panel/matrices', <FileTextOutlined />),
   ];
 
   const [itemsToShow, setItemsToShow] = useState(items);
