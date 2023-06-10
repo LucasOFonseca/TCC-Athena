@@ -1,13 +1,31 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Matrix } from '@athena-types/matrix';
 import { Button, Divider, Form, FormInstance, Space } from 'antd';
+import styled from 'styled-components';
 import { MatrixModuleCard } from '../MatrixModuleCard';
+
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+`;
 
 interface ModulesListProps {
   form: FormInstance<Matrix>;
 }
 
 export const ModulesList: React.FC<ModulesListProps> = ({ form }) => {
+  const modules = Form.useWatch('modules', form);
+
+  const totalWorkload = modules
+    ?.map((module) => module?.disciplines)
+    .flat()
+    ?.reduce(
+      (acc, discipline) => acc + (discipline ? discipline.workload : 0),
+      0
+    );
+
   return (
     <>
       <Divider
@@ -52,6 +70,12 @@ export const ModulesList: React.FC<ModulesListProps> = ({ form }) => {
       </Form.List>
 
       <Divider />
+
+      {totalWorkload ? (
+        <Footer>
+          <strong>Carga horária:</strong> <span>{totalWorkload} horas</span>
+        </Footer>
+      ) : null}
     </>
   );
 };

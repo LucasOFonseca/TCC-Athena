@@ -2,7 +2,6 @@
 
 import { PlusOutlined } from '@ant-design/icons';
 import { GenericStatus } from '@athena-types/genericStatus';
-import { Matrix } from '@athena-types/matrix';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { matrixService } from '@services/matrix';
 import { useQuery } from '@tanstack/react-query';
@@ -29,13 +28,18 @@ export default function MatricesPage() {
     staleTime: Infinity,
   });
 
+  const [matrixToEditGuid, setMatrixToEditGuid] = useState<string>();
   const [showMatrixDialogForm, setShowMatrixDialogForm] = useState(false);
 
-  const handleOpenMatrixDialogForm = (matrix?: Matrix) => {
+  const handleOpenMatrixDialogForm = (guid?: string) => {
+    if (guid) setMatrixToEditGuid(guid);
+
     setShowMatrixDialogForm(true);
   };
 
   const handleCloseMatrixDialogForm = () => {
+    if (matrixToEditGuid) setMatrixToEditGuid(undefined);
+
     setShowMatrixDialogForm(false);
   };
 
@@ -43,6 +47,7 @@ export default function MatricesPage() {
     <>
       <MatrixDialogForm
         open={showMatrixDialogForm}
+        matrixToEditGuid={matrixToEditGuid}
         onClose={handleCloseMatrixDialogForm}
       />
 
@@ -55,7 +60,7 @@ export default function MatricesPage() {
 
       <MatricesTable
         matrices={data?.data ?? []}
-        onEdit={() => handleOpenMatrixDialogForm()}
+        onEdit={handleOpenMatrixDialogForm}
       />
 
       {data && (

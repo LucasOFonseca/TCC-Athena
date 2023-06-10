@@ -1,5 +1,6 @@
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Matrix } from '@athena-types/matrix';
+import { ErrorMessages } from '@athena-types/messages';
 import {
   Button,
   Card,
@@ -26,6 +27,13 @@ const Container = styled(Card)`
   }
 `;
 
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+`;
+
 interface MatrixModuleCardProps {
   showRemove: boolean;
   index: number;
@@ -41,6 +49,13 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
   moduleField,
   onRemove,
 }) => {
+  const modules = Form.useWatch('modules', form);
+
+  const totalModuleWorkload = modules?.[index].disciplines?.reduce(
+    (acc, discipline) => acc + (discipline ? discipline.workload : 0),
+    0
+  );
+
   return (
     <Container
       title={
@@ -71,7 +86,18 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
     >
       <p style={{ fontWeight: 600, marginBottom: 8 }}>Disciplinas</p>
 
-      <Form.List name={[moduleField.name, 'disciplines']}>
+      <Form.List
+        name={[moduleField.name, 'disciplines']}
+        rules={[
+          {
+            validator: async (_, disciplines) => {
+              if (!disciplines || disciplines.length < 1) {
+                return Promise.reject(new Error(ErrorMessages.MSGE01));
+              }
+            },
+          },
+        ]}
+      >
         {(fields, { add, remove }, { errors }) => (
           <>
             <Space
@@ -82,7 +108,6 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
               {fields.map((field, index) => (
                 <ModuleDisciplineSelect
                   key={field.key}
-                  index={index}
                   form={form}
                   moduleField={moduleField}
                   field={field}
@@ -93,6 +118,8 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
             </Space>
 
             <Form.Item>
+              <Form.ErrorList errors={errors} />
+
               <Button
                 block
                 type="text"
@@ -105,6 +132,13 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
           </>
         )}
       </Form.List>
+
+      {totalModuleWorkload ? (
+        <Footer>
+          <strong>Carga horária:</strong>{' '}
+          <span>{totalModuleWorkload} horas</span>
+        </Footer>
+      ) : null}
     </Container>
   );
 };

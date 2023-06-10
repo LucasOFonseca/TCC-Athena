@@ -1,10 +1,10 @@
 'use client';
 
-import { Course } from '@athena-types/course';
 import { CreateMatrixRequestData, Matrix } from '@athena-types/matrix';
 import { ErrorMessages } from '@athena-types/messages';
 import { matrixService } from '@services/matrix';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useProgressIndicator } from '@stores/useProgressIndicator';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, Form, Input, Modal } from 'antd';
 import { useEffect } from 'react';
 import styled from 'styled-components';
@@ -57,20 +57,37 @@ const StyledModal = styled(Modal)`
 
 interface MatrixDialogFormProps {
   open: boolean;
-  matrixToEdit?: Matrix;
+  matrixToEditGuid?: string;
   onClose: () => void;
 }
 
 export const MatrixDialogForm: React.FC<MatrixDialogFormProps> = ({
   open,
-  matrixToEdit,
+  matrixToEditGuid,
   onClose,
 }) => {
   const queryClient = useQueryClient();
 
+  const { addProgressIndicatorItem, removeProgressIndicatorItem } =
+    useProgressIndicator();
+
   const [form] = Form.useForm<Matrix>();
 
   const { resetFields, setFieldsValue, validateFields } = form;
+
+  const { data: matrixToEdit, isFetching } = useQuery({
+    queryKey: ['matrix', matrixToEditGuid],
+    queryFn: () => matrixService.getByGuid(matrixToEditGuid ?? ''),
+    onSuccess: (data) => {
+      setFieldsValue({
+        name: data.name,
+        courseGuid: data.courseGuid,
+        modules: data.modules,
+      });
+    },
+    staleTime: Infinity,
+    enabled: !!matrixToEditGuid,
+  });
 
   const createMatrix = useMutation({
     mutationFn: (data: CreateMatrixRequestData) => matrixService.create(data),
@@ -106,31 +123,11 @@ export const MatrixDialogForm: React.FC<MatrixDialogFormProps> = ({
     mutationFn: (data: Matrix) => matrixService.update(data),
     onSuccess: (updatedData) => {
       queryClient.setQueriesData(
-        {
-          predicate: ({ queryKey }) =>
-            queryKey[0] === 'matrices' && queryKey[3] === '',
-        },
-        (data: any) => {
-          const itemIndex: number = data.data.findIndex(
-            (item: Course) => item.guid === updatedData.guid
-          );
-
-          if (itemIndex === -1) {
-            return data;
-          }
-
-          const newArrayOfData = [...data.data];
-
-          newArrayOfData[itemIndex] = updatedData;
-
-          return { ...data, data: newArrayOfData };
-        }
+        ['matrix', updatedData.guid],
+        () => updatedData
       );
 
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === 'matrices' && queryKey[3] !== '',
-      });
+      queryClient.invalidateQueries(['matrices']);
     },
   });
 
@@ -146,6 +143,16 @@ export const MatrixDialogForm: React.FC<MatrixDialogFormProps> = ({
   const handleSubmit = () => {
     validateFields()
       .then((data) => {
+        if (
+          data.modules.some((module) =>
+            module.disciplines.some((discipline) => !discipline?.guid)
+          )
+        ) {
+          Swal.fire('Ops!', ErrorMessages.MSGE01, 'error');
+
+          return;
+        }
+
         const dataToSend = {
           ...data,
           modules: data.modules.map((module, index) => ({
@@ -158,7 +165,7 @@ export const MatrixDialogForm: React.FC<MatrixDialogFormProps> = ({
           editMatrix
             .mutateAsync({
               ...matrixToEdit,
-              ...data,
+              ...dataToSend,
             })
             .then(() => {
               handleCancel();
@@ -179,12 +186,25 @@ export const MatrixDialogForm: React.FC<MatrixDialogFormProps> = ({
   };
 
   useEffect(() => {
-    if (matrixToEdit) {
+    if (isFetching) {
+      addProgressIndicatorItem({
+        id: 'fetch-matrix',
+        message: 'Obtendo dados da matriz...',
+      });
+
+      return;
+    }
+
+    if (matrixToEdit && matrixToEdit.guid === matrixToEditGuid) {
       setFieldsValue({
         name: matrixToEdit.name,
+        courseGuid: matrixToEdit.courseGuid,
+        modules: matrixToEdit.modules,
       });
     }
-  }, [matrixToEdit]); // eslint-disable-line
+
+    removeProgressIndicatorItem('fetch-matrix');
+  }, [isFetching, matrixToEdit, matrixToEditGuid]);
 
   return (
     <StyledModal
@@ -222,11 +242,7 @@ export const MatrixDialogForm: React.FC<MatrixDialogFormProps> = ({
           modules: [
             {
               name: '',
-              disciplines: [
-                {
-                  name: '',
-                },
-              ],
+              disciplines: [],
             },
           ],
         }}

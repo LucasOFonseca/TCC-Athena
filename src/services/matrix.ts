@@ -21,6 +21,12 @@ async function getPaginated(
   );
 }
 
+async function getByGuid(guid: string): Promise<Matrix> {
+  return Api.get(`${baseUrl}/${guid}`, { headers: { authHeader: true } }).then(
+    (res) => res.data
+  );
+}
+
 async function create(data: CreateMatrixRequestData): Promise<MatrixBase> {
   return Api.post(baseUrl, data, {
     headers: { authHeader: true, 'success-message': SuccessMessages.MSGS03 },
@@ -44,4 +50,10 @@ async function changeStatus(
   ).then((res) => res.data);
 }
 
-export const matrixService = { getPaginated, create, update, changeStatus };
+export const matrixService = {
+  getPaginated,
+  getByGuid,
+  create,
+  update,
+  changeStatus,
+};

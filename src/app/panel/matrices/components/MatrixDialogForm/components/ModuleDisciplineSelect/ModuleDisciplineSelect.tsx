@@ -6,6 +6,7 @@ import { disciplineService } from '@services/discipline';
 import { useQuery } from '@tanstack/react-query';
 import {
   Button,
+  Form,
   FormInstance,
   FormListFieldData,
   Select,
@@ -26,7 +27,6 @@ const Container = styled(Space)`
 
 interface ModuleDisciplineSelectProps {
   showRemove: boolean;
-  index: number;
   form: FormInstance<Matrix>;
   moduleField: FormListFieldData;
   field: FormListFieldData;
@@ -35,12 +35,13 @@ interface ModuleDisciplineSelectProps {
 
 export const ModuleDisciplineSelect: React.FC<ModuleDisciplineSelectProps> = ({
   showRemove,
-  index,
   form,
   moduleField,
   field,
   onRemove,
 }) => {
+  const modules = Form.useWatch('modules', form);
+
   const { getFieldValue, setFieldValue } = form;
 
   const [discipline, setDiscipline] = useState<MatrixModuleDiscipline>();
@@ -64,18 +65,6 @@ export const ModuleDisciplineSelect: React.FC<ModuleDisciplineSelectProps> = ({
     []
   );
 
-  const handleRemove = () => {
-    setFieldValue(
-      ['modules', moduleField.name, 'disciplines'],
-      getFieldValue(['modules', moduleField.name, 'disciplines']).splice(
-        index,
-        1
-      )
-    );
-
-    onRemove();
-  };
-
   useEffect(() => {
     const value = getFieldValue([
       'modules',
@@ -97,46 +86,51 @@ export const ModuleDisciplineSelect: React.FC<ModuleDisciplineSelectProps> = ({
         placeholder="Adicione uma disciplina"
         optionFilterProp="children"
         loading={isLoading}
-        value={discipline?.guid}
+        value={discipline?.name}
         onChange={(value) => {
-          const foundDiscipline = data?.data?.find((d) => d.guid === value);
+          const foundDiscipline = data?.data?.find((d) => d.name === value);
 
           setDiscipline({
-            guid: value,
+            guid: foundDiscipline?.guid ?? '',
             workload: foundDiscipline?.workload ?? 0,
-            name: foundDiscipline?.name ?? '',
+            name: value,
           });
           setFieldValue(
             ['modules', moduleField.name, 'disciplines', field.name],
             {
-              guid: value,
+              guid: foundDiscipline?.guid ?? '',
               workload: foundDiscipline?.workload ?? 0,
-              name: foundDiscipline?.name ?? '',
+              name: value,
             }
           );
         }}
-        options={data?.data?.map((discipline) => ({
-          label: discipline.name,
-          value: discipline.guid,
-        }))}
+        options={data?.data
+          ?.filter((discipline) => {
+            const selectedDisciplines = modules
+              ?.map((module) => module.disciplines)
+              .flat();
+
+            return !selectedDisciplines?.find(
+              (d) => d?.name === discipline.name
+            );
+          })
+          .map((discipline) => ({
+            label: discipline.name,
+            value: discipline.name,
+          }))}
         filterOption={(input, option) =>
           includesIgnoreDiacritics(option?.label ?? '', input)
         }
         onSearch={(value) => debouncedSearch(value)}
       />
 
-      {discipline && (
+      {discipline?.workload && (
         <span style={{ whiteSpace: 'nowrap' }}>{discipline.workload} hrs</span>
       )}
 
       {showRemove && (
         <Tooltip placement="bottom" title="Remover disciplina">
-          <Button
-            size="middle"
-            shape="circle"
-            type="text"
-            onClick={handleRemove}
-          >
+          <Button size="middle" shape="circle" type="text" onClick={onRemove}>
             <MinusCircleOutlined />
           </Button>
         </Tooltip>
