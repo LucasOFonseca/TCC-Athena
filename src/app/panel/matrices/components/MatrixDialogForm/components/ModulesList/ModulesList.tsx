@@ -73,7 +73,8 @@ export const ModulesList: React.FC<ModulesListProps> = ({ form }) => {
 
       {totalWorkload ? (
         <Footer>
-          <strong>Carga horária:</strong> <span>{totalWorkload} horas</span>
+          <strong>Carga horária (total):</strong>{' '}
+          <span>{totalWorkload} horas</span>
         </Footer>
       ) : null}
     </>
