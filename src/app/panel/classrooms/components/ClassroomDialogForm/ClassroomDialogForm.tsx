@@ -164,6 +164,7 @@ export const ClassroomDialogForm: React.FC<ClassroomDialogFormProps> = ({
     if (classroomToEdit) {
       setFieldsValue({
         name: classroomToEdit.name,
+        capacity: classroomToEdit.capacity,
       });
     }
   }, [classroomToEdit]); // eslint-disable-line
