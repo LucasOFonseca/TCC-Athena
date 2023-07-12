@@ -1,17 +1,14 @@
-import {
-  EditOutlined,
-  ExclamationCircleOutlined,
-  MailOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, MailOutlined } from '@ant-design/icons';
 import { Employee } from '@athena-types/employee';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { StatusButton } from '@components/StatusButton';
+import { useChangeStatusConfirmation } from '@helpers/hooks';
 import { formatCpf, formatPhoneNumber, getRoleProps } from '@helpers/utils';
 import { employeeService } from '@services/employee';
 import { useProgressIndicator } from '@stores/useProgressIndicator';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Divider, Modal, Table, Tag, Tooltip } from 'antd';
+import { Button, Divider, Table, Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 
@@ -41,7 +38,7 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
   onEdit,
 }) => {
   const queryClient = useQueryClient();
-  const { confirm } = Modal;
+  const handleChangeStatus = useChangeStatusConfirmation();
 
   const { addProgressIndicatorItem, removeProgressIndicatorItem } =
     useProgressIndicator();
@@ -62,34 +59,6 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
 
     employeeService.resetPassword(guid).finally(() => {
       removeProgressIndicatorItem('reset-password');
-    });
-  };
-
-  const handleChangeStatus = (guid: string, status: GenericStatus) => {
-    confirm({
-      centered: true,
-      title: `Alterar status para ${
-        status === GenericStatus.active ? '"inativo"' : '"ativo"'
-      }?`,
-      icon: <ExclamationCircleOutlined />,
-      content: `Após confirmar o cadastro ficará ${
-        status === GenericStatus.active
-          ? 'indisponível para uso até que o status retorne para "ativo".'
-          : 'disponível para uso.'
-      }`,
-      okText: 'Alterar',
-      cancelButtonProps: {
-        danger: true,
-      },
-      onOk() {
-        changeStatus.mutate({
-          guid,
-          status:
-            status === GenericStatus.active
-              ? GenericStatus.inactive
-              : GenericStatus.active,
-        });
-      },
     });
   };
 
@@ -141,7 +110,15 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
                   <StatusButton
                     currentStatus={record.status}
                     onClick={() =>
-                      handleChangeStatus(record.guid as string, record.status)
+                      handleChangeStatus(record.status, () => {
+                        changeStatus.mutate({
+                          guid: record.guid,
+                          status:
+                            record.status === GenericStatus.active
+                              ? GenericStatus.inactive
+                              : GenericStatus.active,
+                        });
+                      })
                     }
                   />
 

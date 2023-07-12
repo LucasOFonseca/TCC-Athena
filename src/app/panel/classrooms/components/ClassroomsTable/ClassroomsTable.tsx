@@ -1,13 +1,14 @@
 'use client';
 
-import { EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import { Classroom } from '@athena-types/classroom';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { StatusButton } from '@components/StatusButton';
+import { useChangeStatusConfirmation } from '@helpers/hooks';
 import { classroomService } from '@services/classroom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Modal, Table, Tooltip } from 'antd';
+import { Button, Table, Tooltip } from 'antd';
 import styled from 'styled-components';
 
 const TableContainer = styled.div`
@@ -36,7 +37,7 @@ export const ClassroomsTable: React.FC<ClassroomsTableProps> = ({
   onEdit,
 }) => {
   const queryClient = useQueryClient();
-  const { confirm } = Modal;
+  const handleChangeStatus = useChangeStatusConfirmation();
 
   const changeStatus = useMutation({
     mutationFn: (params: any) =>
@@ -45,34 +46,6 @@ export const ClassroomsTable: React.FC<ClassroomsTableProps> = ({
       queryClient.invalidateQueries(['classrooms']);
     },
   });
-
-  const handleChangeStatus = (guid: string, status: GenericStatus) => {
-    confirm({
-      centered: true,
-      title: `Alterar status para ${
-        status === GenericStatus.active ? '"inativo"' : '"ativo"'
-      }?`,
-      icon: <ExclamationCircleOutlined />,
-      content: `Após confirmar o cadastro ficará ${
-        status === GenericStatus.active
-          ? 'indisponível para uso até que o status retorne para "ativo".'
-          : 'disponível para uso.'
-      }`,
-      okText: 'Alterar',
-      cancelButtonProps: {
-        danger: true,
-      },
-      onOk() {
-        changeStatus.mutate({
-          guid,
-          status:
-            status === GenericStatus.active
-              ? GenericStatus.inactive
-              : GenericStatus.active,
-        });
-      },
-    });
-  };
 
   return (
     <ClientComponentLoader>
@@ -104,7 +77,15 @@ export const ClassroomsTable: React.FC<ClassroomsTableProps> = ({
                   <StatusButton
                     currentStatus={record.status}
                     onClick={() =>
-                      handleChangeStatus(record.guid as string, record.status)
+                      handleChangeStatus(record.status, () => {
+                        changeStatus.mutate({
+                          guid: record.guid,
+                          status:
+                            record.status === GenericStatus.active
+                              ? GenericStatus.inactive
+                              : GenericStatus.active,
+                        });
+                      })
                     }
                   />
 

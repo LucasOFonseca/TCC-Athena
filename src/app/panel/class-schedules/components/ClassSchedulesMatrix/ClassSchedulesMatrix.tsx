@@ -1,12 +1,13 @@
 'use client';
 
-import { ExclamationCircleOutlined, FormOutlined } from '@ant-design/icons';
+import { FormOutlined } from '@ant-design/icons';
 import { ClassSchedule } from '@athena-types/classSchedule';
 import { GenericStatus } from '@athena-types/genericStatus';
+import { useChangeStatusConfirmation } from '@helpers/hooks';
 import { allDaysOfWeek, translateDayOfWeek } from '@helpers/utils';
 import { classScheduleService } from '@services/classSchedule';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Modal, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import styled from 'styled-components';
 import { ClassScheduleCell } from './components/ClassScheduleCell';
 
@@ -89,7 +90,7 @@ export const ClassSchedulesMatrix: React.FC<ClassSchedulesMatrixProps> = ({
   onEdit,
 }) => {
   const queryClient = useQueryClient();
-  const { confirm } = Modal;
+  const handleChangeStatus = useChangeStatusConfirmation();
 
   const allClassSchedules = classSchedules.flat();
 
@@ -104,34 +105,6 @@ export const ClassSchedulesMatrix: React.FC<ClassSchedulesMatrixProps> = ({
       ]);
     },
   });
-
-  const handleChangeStatus = (guid: string, currentStatus: GenericStatus) => {
-    confirm({
-      centered: true,
-      title: `Alterar status para ${
-        currentStatus === GenericStatus.active ? '"inativo"' : '"ativo"'
-      }?`,
-      icon: <ExclamationCircleOutlined />,
-      content: `Após confirmar o cadastro ficará ${
-        currentStatus === GenericStatus.active
-          ? 'indisponível para uso até que o status retorne para "ativo".'
-          : 'disponível para uso.'
-      }`,
-      okText: 'Alterar',
-      cancelButtonProps: {
-        danger: true,
-      },
-      onOk() {
-        changeStatus.mutate({
-          guid,
-          status:
-            currentStatus === GenericStatus.active
-              ? GenericStatus.inactive
-              : GenericStatus.active,
-        });
-      },
-    });
-  };
 
   return (
     <TableContainer>
@@ -186,7 +159,17 @@ export const ClassSchedulesMatrix: React.FC<ClassSchedulesMatrixProps> = ({
                   <ClassScheduleCell
                     key={classScheduleToShow.guid}
                     classSchedule={classScheduleToShow}
-                    onChangeStatus={handleChangeStatus}
+                    onChangeStatus={(guid, status) =>
+                      handleChangeStatus(status, () => {
+                        changeStatus.mutate({
+                          guid,
+                          status:
+                            status === GenericStatus.active
+                              ? GenericStatus.inactive
+                              : GenericStatus.active,
+                        });
+                      })
+                    }
                     onEdit={onEdit}
                   />
                 );
