@@ -10,6 +10,7 @@ const baseRoutes = [
   `${prefix}/classrooms`,
   `${prefix}/class-schedules`,
   `${prefix}/matrices`,
+  `${prefix}/periods`,
 ];
 
 const authorizedRoutesByRole: { [key in EmployeeRole]: string[] } = {

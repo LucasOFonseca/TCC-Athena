@@ -17,6 +17,12 @@ async function getPaginated(
   );
 }
 
+async function getByGuid(guid: string): Promise<Classroom> {
+  return Api.get(`${baseUrl}/${guid}`, { headers: { authHeader: true } }).then(
+    (res) => res.data
+  );
+}
+
 async function create(data: CreateClassroomRequestData): Promise<Classroom> {
   return Api.post(baseUrl, data, {
     headers: { authHeader: true, 'success-message': SuccessMessages.MSGS03 },
@@ -40,4 +46,10 @@ async function changeStatus(
   ).then((res) => res.data);
 }
 
-export const classroomService = { getPaginated, create, update, changeStatus };
+export const classroomService = {
+  getPaginated,
+  getByGuid,
+  create,
+  update,
+  changeStatus,
+};

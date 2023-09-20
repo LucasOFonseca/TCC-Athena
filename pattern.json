@@ -1,0 +1,25 @@
+[
+  {
+    "dataInputs": [
+      {
+        "title": "Name",
+        "key": "name"
+      }
+    ],
+    "title": "Simple React component",
+    "type": "folder",
+    "fileName": "{{name}}",
+    "content": [
+      {
+        "type": "file",
+        "fileName": "{{name}}.tsx",
+        "content": "interface {{name}}Props {\r\n children?: React.ReactNode\r\n}\r\n\r\nexport const {{name}}: React.FC<{{name}}Props> = ({ children }) => {\r\n  return <></>;\r\n};\r\n"
+      },
+      {
+        "type": "file",
+        "fileName": "index.ts",
+        "content": "import { {{name}} } from './{{name}}';\r\n\r\nexport { {{name}} };\r\n"
+      }
+    ]
+  }
+]
