@@ -14,7 +14,9 @@ export enum PeriodStatus {
 export interface DisciplineSchedule {
   guid?: string;
   employeeGuid: string;
+  employeeName: string;
   disciplineGuid: string;
+  disciplineName: string;
   schedules: ClassSchedule[];
 }
 

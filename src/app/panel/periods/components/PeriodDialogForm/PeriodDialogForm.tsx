@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 import { ClassroomSelect } from './components/ClassroomSelect';
+import { DisciplinesScheduleList } from './components/DisciplinesScheduleList';
 import { MatrixModuleSelect } from './components/MatrixModuleSelect';
 import { MatrixSelect } from './components/MatrixSelect';
 import { ShiftSelect } from './components/ShiftSelect';
@@ -121,6 +122,7 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
   const [form] = Form.useForm<PeriodForm>();
 
   const selectedMatrix = Form.useWatch('matrixGuid', form);
+  const selectedMatrixModule = Form.useWatch('matrixModuleGuid', form);
 
   const { resetFields, setFieldValue, setFieldsValue, validateFields } = form;
 
@@ -428,6 +430,8 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
         <MatrixSelect form={form} />
 
         {selectedMatrix && <MatrixModuleSelect form={form} />}
+
+        {selectedMatrixModule && <DisciplinesScheduleList form={form} />}
       </Form>
     </StyledModal>
   );
