@@ -4,6 +4,7 @@ export interface MatrixModuleDiscipline {
   guid: string;
   name: string;
   workload: number;
+  weeklyClasses: number;
 }
 
 export interface MatrixModule {

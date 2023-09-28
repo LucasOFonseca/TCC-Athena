@@ -1,4 +1,4 @@
-import { PeriodForm } from '@athena-types/period';
+import { DisciplineSchedule, PeriodForm } from '@athena-types/period';
 import { includesIgnoreDiacritics } from '@helpers/utils';
 import { matrixService } from '@services/matrix';
 import { useQuery } from '@tanstack/react-query';
@@ -15,8 +15,7 @@ export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
   const { setFieldValue } = form;
 
   const selectedMatrixGuid = Form.useWatch('matrixGuid', form);
-
-  const [search, setSearch] = useState('');
+  const selectedMatrixModuleGuid = Form.useWatch('matrixModuleGuid', form);
 
   const [matrixModule, setMatrixModule] = useState<{
     guid: string;
@@ -44,7 +43,7 @@ export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
         loading={isLoading}
         value={matrixModule?.name}
         onChange={(value) => {
-          const foundMatrixModule = data?.modules.find((m) => m.name === value);
+          const foundMatrixModule = data?.modules.find((m) => m.guid === value);
 
           if (foundMatrixModule) {
             setMatrixModule({
@@ -52,6 +51,24 @@ export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
               name: foundMatrixModule.name,
             });
             setFieldValue('matrixModuleGuid', foundMatrixModule?.guid);
+
+            if (
+              !selectedMatrixGuid ||
+              foundMatrixModule.guid !== selectedMatrixModuleGuid
+            ) {
+              setFieldValue(
+                'disciplinesSchedule',
+                foundMatrixModule.disciplines.map<DisciplineSchedule>(
+                  ({ guid, name }) => ({
+                    disciplineGuid: guid,
+                    disciplineName: name,
+                    employeeGuid: '',
+                    employeeName: '',
+                    schedules: [],
+                  })
+                )
+              );
+            }
           }
         }}
         options={data?.modules.map((module) => ({

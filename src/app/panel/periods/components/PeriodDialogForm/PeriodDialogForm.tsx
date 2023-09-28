@@ -22,6 +22,27 @@ import { MatrixSelect } from './components/MatrixSelect';
 import { ShiftSelect } from './components/ShiftSelect';
 
 const StyledModal = styled(Modal)`
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 32px);
+    padding: 0;
+
+    .ant-modal-title {
+      padding: 24px 16px 0;
+    }
+
+    .ant-modal-body {
+      padding: 8px 16px;
+      overflow-y: auto;
+    }
+
+    .ant-modal-footer {
+      padding: 8px 16px 16px;
+      margin-top: 0;
+    }
+  }
+
   @media (max-width: 600px) {
     max-width: unset;
     width: 100% !important;
@@ -131,18 +152,10 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
     queryFn: () => periodService.getByGuid(periodToEditGuid ?? ''),
     onSuccess: (data) => {
       setFieldsValue({
-        classId: data.classId,
-        classroomGuid: data.classroomGuid,
+        ...data,
         deadline: dayjs(data.deadline),
-        disciplinesSchedule: data.disciplinesSchedule,
         enrollmentEndDate: dayjs(data.enrollmentEndDate),
         enrollmentStartDate: dayjs(data.enrollmentStartDate),
-        guid: data.guid,
-        matrixModuleGuid: data.matrixModuleGuid,
-        shiftGuid: data.shiftGuid,
-        status: data.status,
-        vacancies: data.vacancies,
-        matrixGuid: data.matrixGuid,
       });
     },
     staleTime: Infinity,
@@ -274,18 +287,10 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
 
     if (periodToEdit && periodToEdit.guid === periodToEditGuid) {
       setFieldsValue({
-        classId: periodToEdit.classId,
-        classroomGuid: periodToEdit.classroomGuid,
+        ...periodToEdit,
         deadline: dayjs(periodToEdit.deadline),
-        disciplinesSchedule: periodToEdit.disciplinesSchedule,
         enrollmentEndDate: dayjs(periodToEdit.enrollmentEndDate),
         enrollmentStartDate: dayjs(periodToEdit.enrollmentStartDate),
-        guid: periodToEdit.guid,
-        matrixModuleGuid: periodToEdit.matrixModuleGuid,
-        shiftGuid: periodToEdit.shiftGuid,
-        status: periodToEdit.status,
-        vacancies: periodToEdit.vacancies,
-        matrixGuid: periodToEdit.matrixGuid,
       });
     }
 
@@ -323,6 +328,10 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
         size="middle"
         disabled={createPeriod.isLoading || editPeriod.isLoading}
         form={form}
+        initialValues={{
+          classId: 'A',
+          disciplinesSchedule: [],
+        }}
       >
         <Form.Item label="Período de matrícula">
           <Space.Compact block>

@@ -41,7 +41,7 @@ export const ShiftSelect: React.FC<ShiftSelectProps> = ({ form }) => {
         loading={isLoading}
         value={shift?.shift}
         onChange={(value) => {
-          const foundShift = data?.find((s) => s.shift === value);
+          const foundShift = data?.find((s) => s.guid === value);
 
           setShift(foundShift);
           setFieldValue('shiftGuid', foundShift?.guid);

@@ -69,7 +69,7 @@ export const ClassroomSelect: React.FC<ClassroomSelectProps> = ({ form }) => {
         loading={isLoading}
         value={classroom?.name}
         onChange={(value) => {
-          const foundClassroom = data?.data?.find((c) => c.name === value);
+          const foundClassroom = data?.data?.find((c) => c.guid === value);
 
           setClassroom(foundClassroom);
           setFieldValue('classroomGuid', foundClassroom?.guid);

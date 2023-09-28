@@ -1,5 +1,6 @@
 import { Address } from './address';
 import { GenericStatus } from './genericStatus';
+import { PaginatedRequestParams } from './paginatedData';
 
 export enum EmployeeRole {
   principal = 'principal',
@@ -21,4 +22,8 @@ export interface CreateEmployeeRequestData {
 export interface Employee extends CreateEmployeeRequestData {
   guid?: string;
   status: GenericStatus;
+}
+
+export interface EmployeePaginatedRequestParams extends PaginatedRequestParams {
+  role?: EmployeeRole;
 }

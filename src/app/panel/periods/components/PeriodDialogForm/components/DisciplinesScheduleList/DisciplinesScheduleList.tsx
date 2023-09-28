@@ -1,11 +1,9 @@
-import { MatrixModule } from '@athena-types/matrix';
-import { PeriodForm } from '@athena-types/period';
-import { matrixService } from '@services/matrix';
-import { useQuery } from '@tanstack/react-query';
+import { DisciplineSchedule, PeriodForm } from '@athena-types/period';
 import { Form, FormInstance } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { DisciplineScheduleCard } from './components/DisciplineScheduleCard';
+import { DisciplineScheduleDialogForm } from './components/DisciplineScheduleDialogForm';
 
 const Container = styled.div`
   display: flex;
@@ -20,45 +18,56 @@ interface DisciplinesScheduleListProps {
 export const DisciplinesScheduleList: React.FC<
   DisciplinesScheduleListProps
 > = ({ form }) => {
-  const { setFieldValue } = form;
+  const [
+    showDisciplineScheduleDialogForm,
+    setShowDisciplineScheduleDialogForm,
+  ] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [disciplineSchedule, setDisciplineSchedule] =
+    useState<DisciplineSchedule>();
 
-  const selectedMatrixGuid = Form.useWatch('matrixGuid', form);
-  const selectedMatrixModuleGuid = Form.useWatch('matrixModuleGuid', form);
+  const handleOpenDisciplineScheduleDialogForm = (
+    value: DisciplineSchedule,
+    index: number
+  ) => {
+    setShowDisciplineScheduleDialogForm(true);
+    setDisciplineSchedule(value);
+    setIndex(index);
+  };
 
-  const [matrixModule, setMatrixModule] = useState<MatrixModule>();
-
-  const { data: matrix, isLoading } = useQuery(['matrix', selectedMatrixGuid], {
-    queryFn: () => matrixService.getByGuid(selectedMatrixGuid),
-    staleTime: Infinity,
-    enabled: selectedMatrixGuid !== undefined,
-  });
-
-  useEffect(() => {
-    if (!matrix) return;
-
-    const selectedModule = matrix.modules.find(
-      (m) => m.guid === selectedMatrixModuleGuid
-    );
-
-    if (!selectedModule) return;
-
-    setMatrixModule(selectedModule);
-  }, [matrix, selectedMatrixModuleGuid]);
+  const handleCloseDisciplineScheduleDialogForm = () => {
+    setShowDisciplineScheduleDialogForm(false);
+    setDisciplineSchedule(undefined);
+  };
 
   return (
-    <Container>
-      {matrixModule?.disciplines.map((discipline) => (
-        <DisciplineScheduleCard
-          key={discipline.guid}
-          disciplineSchedule={{
-            disciplineName: discipline.name,
-            disciplineGuid: discipline.guid,
-            employeeGuid: '',
-            employeeName: '',
-            schedules: [],
-          }}
-        />
-      ))}
-    </Container>
+    <>
+      <DisciplineScheduleDialogForm
+        open={showDisciplineScheduleDialogForm}
+        form={form}
+        index={index}
+        disciplineSchedule={disciplineSchedule}
+        onClose={handleCloseDisciplineScheduleDialogForm}
+      />
+
+      <Container>
+        <Form.List name="disciplinesSchedule">
+          {(fields) => (
+            <>
+              {fields.map((field, index) => (
+                <DisciplineScheduleCard
+                  key={field.key}
+                  index={index}
+                  form={form}
+                  onAction={(value) =>
+                    handleOpenDisciplineScheduleDialogForm(value, index)
+                  }
+                />
+              ))}
+            </>
+          )}
+        </Form.List>
+      </Container>
+    </>
   );
 };

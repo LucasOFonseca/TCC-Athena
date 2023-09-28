@@ -78,7 +78,7 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
               style={{ margin: '4px 4px 4px 0' }}
               onClick={onRemove}
             >
-              <DeleteOutlined />
+              <DeleteOutlined rev="" />
             </Button>
           </Tooltip>
         ) : undefined
@@ -123,7 +123,7 @@ export const MatrixModuleCard: React.FC<MatrixModuleCardProps> = ({
               <Button
                 block
                 type="text"
-                icon={<PlusOutlined />}
+                icon={<PlusOutlined rev="" />}
                 onClick={() => add()}
               >
                 Adicionar disciplina
