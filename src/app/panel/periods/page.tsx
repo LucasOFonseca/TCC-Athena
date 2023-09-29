@@ -7,6 +7,7 @@ import { periodService } from '@services/period';
 import { useQuery } from '@tanstack/react-query';
 import { FloatButton, Pagination } from 'antd';
 import { useState } from 'react';
+import { EnrolledStudentsDialog } from './components/EnrolledStudentsDialog';
 import { PageHeader } from './components/PageHeader';
 import { PeriodDialogForm } from './components/PeriodDialogForm';
 import { PeriodsTable } from './components/PeriodsTable';
@@ -29,6 +30,34 @@ export default function PeriodsPage() {
   const [periodToEditGuid, setPeriodToEditGuid] = useState<string>();
   const [editScheduleOnly, setEditScheduleOnly] = useState(false);
   const [showPeriodDialogForm, setShowPeriodDialogForm] = useState(false);
+
+  const [seeEnrollmentsInReadOnlyMode, setSeeEnrollmentsInReadOnlyMode] =
+    useState(false);
+  const [periodToSeeEnrollments, setPeriodToSeeEnrollments] =
+    useState<string>();
+  const [showEnrolledStudentsDialogForm, setShowEnrolledStudentsDialogForm] =
+    useState(false);
+
+  const handleOpenEnrolledStudentsDialogForm = (
+    guid: string,
+    readOnly?: boolean
+  ) => {
+    if (readOnly) {
+      setSeeEnrollmentsInReadOnlyMode(true);
+    }
+
+    setPeriodToSeeEnrollments(guid);
+    setShowEnrolledStudentsDialogForm(true);
+  };
+
+  const handleCloseEnrolledStudentsDialogForm = () => {
+    setShowEnrolledStudentsDialogForm(false);
+    setPeriodToSeeEnrollments(undefined);
+
+    if (seeEnrollmentsInReadOnlyMode) {
+      setSeeEnrollmentsInReadOnlyMode(false);
+    }
+  };
 
   const handleOpenPeriodDialogForm = (
     guid?: string,
@@ -64,6 +93,13 @@ export default function PeriodsPage() {
         onClose={handleClosePeriodDialogForm}
       />
 
+      <EnrolledStudentsDialog
+        open={showEnrolledStudentsDialogForm}
+        readOnly={seeEnrollmentsInReadOnlyMode}
+        periodGuid={periodToSeeEnrollments}
+        onClose={handleCloseEnrolledStudentsDialogForm}
+      />
+
       <PageHeader
         statusFilter={statusFilter}
         onChangeSearch={(value) => setSearch(value)}
@@ -73,6 +109,7 @@ export default function PeriodsPage() {
       <PeriodsTable
         periods={data?.data ?? []}
         onEdit={handleOpenPeriodDialogForm}
+        onSeeEnrollments={handleOpenEnrolledStudentsDialogForm}
       />
 
       {data && (

@@ -1,5 +1,6 @@
 export interface StudentEnrollment {
   guid: string;
   enrollmentNumber: string;
-  student: string;
+  studentName: string;
+  studentGuid: string;
 }

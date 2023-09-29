@@ -65,11 +65,13 @@ const DisciplineScheduleItem = styled.div`
 interface PeriodsTableProps {
   periods: SimplifiedPeriod[];
   onEdit: (guid?: string, editScheduleOnly?: boolean) => void;
+  onSeeEnrollments: (guid: string, readOnly?: boolean) => void;
 }
 
 export const PeriodsTable: React.FC<PeriodsTableProps> = ({
   periods,
   onEdit,
+  onSeeEnrollments,
 }) => {
   const { confirm } = Modal;
   const queryClient = useQueryClient();
@@ -145,7 +147,12 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
                       shape="circle"
                       type="text"
                       style={{ marginLeft: 8 }}
-                      onClick={() => onEdit(record.guid)}
+                      onClick={() =>
+                        onSeeEnrollments(
+                          record.guid,
+                          record.status !== PeriodStatus.openForEnrollment
+                        )
+                      }
                     >
                       <TeamOutlined />
                     </Button>

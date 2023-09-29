@@ -54,6 +54,12 @@ async function enrollStudents(
   }).then((res) => res.data);
 }
 
+async function getEnrollments(guid: string): Promise<StudentEnrollment[]> {
+  return Api.get(`${baseUrl}/${guid}/enrollments`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
 async function cancelEnrollment(
   periodGuid: string,
   enrollmentGuid: string
@@ -70,5 +76,6 @@ export const periodService = {
   update,
   cancel,
   enrollStudents,
+  getEnrollments,
   cancelEnrollment,
 };
