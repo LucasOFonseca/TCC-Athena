@@ -39,7 +39,7 @@ async function update(data: Period): Promise<Period> {
 
 async function cancel(guid: string): Promise<Period> {
   return Api.patch(
-    `${baseUrl}/${guid}`,
+    `${baseUrl}/${guid}/cancel`,
     { status: PeriodStatus.canceled },
     { headers: { authHeader: true, 'success-message': SuccessMessages.MSGS04 } }
   ).then((res) => res.data);

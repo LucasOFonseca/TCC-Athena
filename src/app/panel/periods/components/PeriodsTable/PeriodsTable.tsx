@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ClockCircleOutlined,
   CloseOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
@@ -8,13 +9,12 @@ import {
 } from '@ant-design/icons';
 import { PeriodStatus, SimplifiedPeriod } from '@athena-types/period';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
-import { useChangeStatusConfirmation } from '@helpers/hooks';
 import { getPeriodStatusProps, translateDayOfWeek } from '@helpers/utils';
+import { periodService } from '@services/period';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Modal, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import { disciplineService } from '../../../../../services/discipline';
 
 const TableContainer = styled.div`
   border-radius: 8px;
@@ -64,7 +64,7 @@ const DisciplineScheduleItem = styled.div`
 
 interface PeriodsTableProps {
   periods: SimplifiedPeriod[];
-  onEdit: (guid: string) => void;
+  onEdit: (guid?: string, editScheduleOnly?: boolean) => void;
 }
 
 export const PeriodsTable: React.FC<PeriodsTableProps> = ({
@@ -73,13 +73,11 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
 }) => {
   const { confirm } = Modal;
   const queryClient = useQueryClient();
-  const handleChangeStatus = useChangeStatusConfirmation();
 
-  const changeStatus = useMutation({
-    mutationFn: (params: any) =>
-      disciplineService.changeStatus(params.guid, params.status),
+  const cancelPeriod = useMutation({
+    mutationFn: (guid: string) => periodService.cancel(guid),
     onSuccess: () => {
-      queryClient.invalidateQueries(['disciplines']);
+      queryClient.invalidateQueries(['periods']);
     },
   });
 
@@ -95,7 +93,7 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
       cancelButtonProps: {
         danger: true,
       },
-      onOk: () => {},
+      onOk: () => cancelPeriod.mutate(guid),
     });
   };
 
@@ -136,9 +134,13 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
               width: 140,
               align: 'left',
               render: (_, record) => (
-                <>
+                <div style={{ display: 'flex' }}>
                   <Tooltip placement="bottom" title="Ver alunos matriculados">
                     <Button
+                      disabled={
+                        record.status === PeriodStatus.draft ||
+                        record.status === PeriodStatus.notStarted
+                      }
                       size="middle"
                       shape="circle"
                       type="text"
@@ -149,38 +151,54 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
                     </Button>
                   </Tooltip>
 
-                  {record.status !== PeriodStatus.canceled &&
-                  record.status !== PeriodStatus.finished ? (
-                    <>
-                      <Tooltip placement="bottom" title="Editar">
-                        <Button
-                          size="middle"
-                          shape="circle"
-                          type="text"
-                          style={{ marginLeft: 8 }}
-                          onClick={() => onEdit(record.guid)}
-                        >
-                          <EditOutlined />
-                        </Button>
-                      </Tooltip>
+                  <Tooltip placement="bottom" title="Editar cronograma">
+                    <Button
+                      disabled={
+                        record.status === PeriodStatus.draft ||
+                        record.status === PeriodStatus.finished ||
+                        record.status === PeriodStatus.canceled
+                      }
+                      size="middle"
+                      shape="circle"
+                      type="text"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => onEdit(record.guid, true)}
+                    >
+                      <ClockCircleOutlined />
+                    </Button>
+                  </Tooltip>
 
-                      <Tooltip placement="bottom" title="Cancelar período">
-                        <Button
-                          danger
-                          size="middle"
-                          shape="circle"
-                          type="text"
-                          style={{ marginLeft: 8 }}
-                          onClick={() =>
-                            handleCancelPeriod(record.guid as string)
-                          }
-                        >
-                          <CloseOutlined />
-                        </Button>
-                      </Tooltip>
-                    </>
+                  <Tooltip placement="bottom" title="Editar">
+                    <Button
+                      disabled={record.status !== PeriodStatus.draft}
+                      size="middle"
+                      shape="circle"
+                      type="text"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => onEdit(record.guid)}
+                    >
+                      <EditOutlined />
+                    </Button>
+                  </Tooltip>
+
+                  {record.status === PeriodStatus.draft ||
+                  record.status === PeriodStatus.notStarted ? (
+                    <Tooltip placement="bottom" title="Cancelar período">
+                      <Button
+                        danger
+                        size="middle"
+                        shape="circle"
+                        type="text"
+                        style={{ marginLeft: 8 }}
+                        onClick={() =>
+                          handleCancelPeriod(record.guid as string)
+                        }
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    </Tooltip>
                   ) : null}
-                </>
+                </div>
               ),
             },
           ]}

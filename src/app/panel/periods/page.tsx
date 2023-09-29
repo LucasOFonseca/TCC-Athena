@@ -27,11 +27,19 @@ export default function PeriodsPage() {
   });
 
   const [periodToEditGuid, setPeriodToEditGuid] = useState<string>();
+  const [editScheduleOnly, setEditScheduleOnly] = useState(false);
   const [showPeriodDialogForm, setShowPeriodDialogForm] = useState(false);
 
-  const handleOpenPeriodDialogForm = (guid?: string) => {
+  const handleOpenPeriodDialogForm = (
+    guid?: string,
+    editScheduleOnly?: boolean
+  ) => {
     if (guid) {
       setPeriodToEditGuid(guid);
+    }
+
+    if (editScheduleOnly) {
+      setEditScheduleOnly(true);
     }
 
     setShowPeriodDialogForm(true);
@@ -43,12 +51,15 @@ export default function PeriodsPage() {
     if (periodToEditGuid) {
       setPeriodToEditGuid(undefined);
     }
+
+    setEditScheduleOnly(false);
   };
 
   return (
     <>
       <PeriodDialogForm
         open={showPeriodDialogForm}
+        editScheduleOnly={editScheduleOnly}
         periodToEditGuid={periodToEditGuid}
         onClose={handleClosePeriodDialogForm}
       />

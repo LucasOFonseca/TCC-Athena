@@ -126,12 +126,14 @@ const classIds = [
 
 interface PeriodDialogFormProps {
   open: boolean;
+  editScheduleOnly: boolean;
   periodToEditGuid?: string;
   onClose: () => void;
 }
 
 export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
   open,
+  editScheduleOnly,
   periodToEditGuid,
   onClose,
 }) => {
@@ -221,7 +223,8 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
 
       queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
-          queryKey[0] === 'periods' && queryKey[3] !== '',
+          (queryKey[0] === 'periods' && queryKey[3] !== '') ||
+          (queryKey[0] === 'period' && queryKey[1] === updatedData.guid),
       });
     },
   });
@@ -239,11 +242,16 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
 
         const parsedData: CreatePeriodRequestData | Period = {
           ...data,
-          status: isDraft ? PeriodStatus.draft : data.status,
           deadline: data.deadline?.format(),
           enrollmentStartDate: data.enrollmentStartDate?.format(),
           enrollmentEndDate: data.enrollmentEndDate?.format(),
         };
+
+        if (isDraft) {
+          parsedData.status = PeriodStatus.draft;
+        } else if (periodToEdit?.status === PeriodStatus.draft) {
+          parsedData.status = PeriodStatus.notStarted;
+        }
 
         if (periodToEdit) {
           editPeriod
@@ -302,7 +310,7 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
       centered
       open={open}
       onCancel={handleCancel}
-      title="Ofertar curso/módulo"
+      title={editScheduleOnly ? 'Editar cronograma' : 'Ofertar curso/módulo'}
       footer={[
         <Button
           danger
@@ -333,36 +341,67 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
           disciplinesSchedule: [],
         }}
       >
-        <Form.Item label="Período de matrícula">
-          <Space.Compact block>
-            <Form.Item
-              style={{ margin: 0, display: 'inline-block', width: '50%' }}
-              name="enrollmentStartDate"
-              rules={[
-                () => ({
-                  validator(_, value) {
-                    const isInvalid = dayjs(value).isBefore(new Date());
+        {!editScheduleOnly && (
+          <>
+            <Form.Item label="Período de matrícula">
+              <Space.Compact block>
+                <Form.Item
+                  style={{ margin: 0, display: 'inline-block', width: '50%' }}
+                  name="enrollmentStartDate"
+                  rules={[
+                    () => ({
+                      validator(_, value) {
+                        const isInvalid = dayjs(value).isBefore(new Date());
 
-                    if (isInvalid) {
-                      return Promise.reject(ErrorMessages.MSGE10);
-                    }
+                        if (isInvalid) {
+                          return Promise.reject(ErrorMessages.MSGE10);
+                        }
 
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-            >
-              <DatePicker
-                size="large"
-                format="DD/MM/YYYY"
-                placeholder="Início"
-                style={{ width: '100%' }}
-              />
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
+                >
+                  <DatePicker
+                    size="large"
+                    format="DD/MM/YYYY"
+                    placeholder="Início"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="enrollmentEndDate"
+                  style={{ margin: 0, display: 'inline-block', width: '50%' }}
+                  rules={[
+                    () => ({
+                      validator(_, value) {
+                        if (!value) return Promise.resolve();
+
+                        const isInvalid = dayjs(value).isBefore(new Date());
+
+                        if (isInvalid) {
+                          return Promise.reject(ErrorMessages.MSGE10);
+                        }
+
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
+                >
+                  <DatePicker
+                    size="large"
+                    format="DD/MM/YYYY"
+                    placeholder="Término"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Space.Compact>
             </Form.Item>
 
             <Form.Item
-              name="enrollmentEndDate"
-              style={{ margin: 0, display: 'inline-block', width: '50%' }}
+              label="Data final do período"
+              name="deadline"
               rules={[
                 () => ({
                   validator(_, value) {
@@ -382,63 +421,38 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
               <DatePicker
                 size="large"
                 format="DD/MM/YYYY"
-                placeholder="Término"
                 style={{ width: '100%' }}
               />
             </Form.Item>
-          </Space.Compact>
-        </Form.Item>
 
-        <Form.Item
-          label="Data final do período"
-          name="deadline"
-          rules={[
-            () => ({
-              validator(_, value) {
-                if (!value) return Promise.resolve();
+            <Form.Item label="Vagas" name="vacancies">
+              <Input size="large" type="number" defaultValue={40} />
+            </Form.Item>
 
-                const isInvalid = dayjs(value).isBefore(new Date());
+            <StyledSpace>
+              <ClassroomSelect form={form} />
 
-                if (isInvalid) {
-                  return Promise.reject(ErrorMessages.MSGE10);
-                }
+              <Form.Item label="Turma" name="classId">
+                <Select
+                  size="large"
+                  optionFilterProp="children"
+                  options={classIds.map((id) => ({
+                    label: id,
+                    value: id,
+                  }))}
+                />
+              </Form.Item>
+            </StyledSpace>
+          </>
+        )}
 
-                return Promise.resolve();
-              },
-            }),
-          ]}
-        >
-          <DatePicker
-            size="large"
-            format="DD/MM/YYYY"
-            style={{ width: '100%' }}
-          />
-        </Form.Item>
+        <div style={{ display: editScheduleOnly ? 'none' : 'contents' }}>
+          <ShiftSelect form={form} />
 
-        <Form.Item label="Vagas" name="vacancies">
-          <Input size="large" type="number" defaultValue={40} />
-        </Form.Item>
+          <MatrixSelect form={form} />
 
-        <StyledSpace>
-          <ClassroomSelect form={form} />
-
-          <Form.Item label="Turma" name="classId">
-            <Select
-              size="large"
-              optionFilterProp="children"
-              options={classIds.map((id) => ({
-                label: id,
-                value: id,
-              }))}
-            />
-          </Form.Item>
-        </StyledSpace>
-
-        <ShiftSelect form={form} />
-
-        <MatrixSelect form={form} />
-
-        {selectedMatrix && <MatrixModuleSelect form={form} />}
+          {selectedMatrix && <MatrixModuleSelect form={form} />}
+        </div>
 
         {selectedMatrixModule && <DisciplinesScheduleList form={form} />}
       </Form>
