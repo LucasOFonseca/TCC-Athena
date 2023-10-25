@@ -17,11 +17,13 @@ const authorizedRoutesByRole: { [key in EmployeeRole]: string[] } = {
   [EmployeeRole.coordinator]: baseRoutes,
   [EmployeeRole.secretary]: baseRoutes,
   [EmployeeRole.principal]: [...baseRoutes, `${prefix}/employees`],
-  [EmployeeRole.educator]: baseRoutes,
+  [EmployeeRole.educator]: [prefix, `${prefix}/attendances`],
 };
 
 export function getAuthorizedRoutesByRoles(roles: EmployeeRole[]) {
-  const authorizedRoutes = roles.map((role) => authorizedRoutesByRole[role])[0];
+  const authorizedRoutes = roles.flatMap(
+    (role) => authorizedRoutesByRole[role]
+  );
 
   const uniqueRoutes = authorizedRoutes.filter((route, index, array) => {
     return array.indexOf(route) === index;
