@@ -1,10 +1,8 @@
 'use client';
 
 import { PlusOutlined } from '@ant-design/icons';
-import { Discipline } from '@athena-types/discipline';
-import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
-import { disciplineService } from '@services/discipline';
+import { attendanceLogService } from '@services/attendanceLog';
 import { useQuery } from '@tanstack/react-query';
 import { FloatButton, Pagination } from 'antd';
 import { useState } from 'react';
@@ -13,30 +11,30 @@ import { AttendancesTable } from './components/AttendancesTable';
 import { PageHeader } from './components/PageHeader';
 
 export default function AttendancesPage() {
-  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<GenericStatus | 'all'>(
-    'all'
+  const [selectedPeriod, setSelectedPeriod] = useState('');
+  const [selectedDiscipline, setSelectedDiscipline] = useState('');
+
+  const { data } = useQuery(
+    ['attendanceLogs', selectedPeriod, selectedDiscipline, page],
+    {
+      queryFn: () =>
+        attendanceLogService.getByPeriodAndDiscipline(
+          selectedPeriod,
+          selectedDiscipline,
+          page
+        ),
+      staleTime: Infinity,
+      enabled: !!selectedPeriod && !!selectedDiscipline,
+    }
   );
 
-  const { data } = useQuery(['disciplines', page, statusFilter, search], {
-    queryFn: () =>
-      disciplineService.getPaginated({
-        filterByStatus: statusFilter !== 'all' ? statusFilter : undefined,
-        query: search,
-        page,
-      }),
-    staleTime: Infinity,
-  });
-
-  const [attendanceToEdit, setAttendanceToEdit] = useState<Discipline>();
+  const [attendanceToEditGuid, setAttendanceToEditGuid] = useState<string>();
   const [showAttendanceDialogForm, setShowAttendanceDialogForm] =
     useState(false);
 
-  const handleOpenAttendanceDialogForm = (attendance?: Discipline) => {
-    if (attendance) {
-      setAttendanceToEdit(attendance);
-    }
+  const handleOpenAttendanceDialogForm = (guid?: string) => {
+    if (guid) setAttendanceToEditGuid(guid);
 
     setShowAttendanceDialogForm(true);
   };
@@ -44,8 +42,8 @@ export default function AttendancesPage() {
   const handleCloseAttendanceDialogForm = () => {
     setShowAttendanceDialogForm(false);
 
-    if (attendanceToEdit) {
-      setAttendanceToEdit(undefined);
+    if (attendanceToEditGuid) {
+      setAttendanceToEditGuid(undefined);
     }
   };
 
@@ -53,11 +51,18 @@ export default function AttendancesPage() {
     <>
       <AttendanceDialogForm
         open={showAttendanceDialogForm}
-        disciplineToEdit={attendanceToEdit}
+        selectedPeriod={selectedPeriod}
+        selectedDiscipline={selectedDiscipline}
+        attendanceToEditGuid={attendanceToEditGuid}
         onClose={handleCloseAttendanceDialogForm}
       />
 
-      <PageHeader statusFilter="all" />
+      <PageHeader
+        selectedPeriod={selectedPeriod}
+        selectedDiscipline={selectedDiscipline}
+        handleChangeDiscipline={setSelectedDiscipline}
+        handleChangePeriod={setSelectedPeriod}
+      />
 
       <AttendancesTable
         attendances={data?.data ?? []}

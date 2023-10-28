@@ -1,13 +1,11 @@
 'use client';
 
 import { EditOutlined } from '@ant-design/icons';
-import { Discipline } from '@athena-types/discipline';
+import { SimplifiedAttendanceLog } from '@athena-types/attendanceLog';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
-import { useChangeStatusConfirmation } from '@helpers/hooks';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Table, Tooltip } from 'antd';
+import dayjs from 'dayjs';
 import styled from 'styled-components';
-import { disciplineService } from '../../../../../services/discipline';
 
 const TableContainer = styled.div`
   border-radius: 8px;
@@ -22,29 +20,23 @@ const TableContainer = styled.div`
     thead tr th::before {
       display: none;
     }
+
+    thead tr th:nth-of-type(2) {
+      width: 100%;
+      max-width: 1000px;
+    }
   }
 `;
 
 interface AttendancesTableProps {
-  attendances: Discipline[];
-  onEdit: (discipline: Discipline) => void;
+  attendances: SimplifiedAttendanceLog[];
+  onEdit: (guid: string) => void;
 }
 
 export const AttendancesTable: React.FC<AttendancesTableProps> = ({
   attendances,
   onEdit,
 }) => {
-  const queryClient = useQueryClient();
-  const handleChangeStatus = useChangeStatusConfirmation();
-
-  const changeStatus = useMutation({
-    mutationFn: (params: any) =>
-      disciplineService.changeStatus(params.guid, params.status),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['disciplines']);
-    },
-  });
-
   return (
     <ClientComponentLoader>
       <TableContainer>
@@ -55,9 +47,18 @@ export const AttendancesTable: React.FC<AttendancesTableProps> = ({
           columns={[
             {
               title: 'Data',
-              dataIndex: 'name',
-              key: 'name',
+              dataIndex: 'classDate',
+              key: 'classDate',
               align: 'left',
+              width: 150,
+              render: (value: string) => dayjs(value).format('DD/MM/YYYY'),
+            },
+            {
+              title: 'Conteúdo',
+              dataIndex: 'classSummary',
+              key: 'classSummary',
+              align: 'left',
+              ellipsis: true,
             },
             {
               dataIndex: 'actions',
@@ -71,7 +72,7 @@ export const AttendancesTable: React.FC<AttendancesTableProps> = ({
                     shape="circle"
                     type="text"
                     style={{ marginLeft: 8 }}
-                    onClick={() => onEdit(record)}
+                    onClick={() => onEdit(record.guid)}
                   >
                     <EditOutlined />
                   </Button>

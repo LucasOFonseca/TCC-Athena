@@ -3,6 +3,7 @@ import {
   Employee,
   EmployeePaginatedRequestParams,
 } from '@athena-types/employee';
+import { FilterItem } from '@athena-types/filterItem';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { SuccessMessages } from '@athena-types/messages';
 import { PaginatedDataResponse } from '@athena-types/paginatedData';
@@ -21,6 +22,20 @@ async function getPaginated(
 
 async function getSchedules(guid: string): Promise<DisciplineSchedule[]> {
   return Api.get(`${baseUrl}/${guid}/schedules`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
+async function getPeriods(): Promise<FilterItem[]> {
+  return Api.get(`${baseUrl}/periods`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
+async function getDisciplinesByPeriod(
+  periodGuid: string
+): Promise<FilterItem[]> {
+  return Api.get(`${baseUrl}/periods/${periodGuid}/disciplines`, {
     headers: { authHeader: true },
   }).then((res) => res.data);
 }
@@ -61,6 +76,8 @@ async function resetPassword(guid: string): Promise<Employee> {
 export const employeeService = {
   getPaginated,
   getSchedules,
+  getPeriods,
+  getDisciplinesByPeriod,
   create,
   update,
   changeStatus,
