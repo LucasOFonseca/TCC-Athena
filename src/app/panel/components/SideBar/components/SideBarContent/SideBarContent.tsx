@@ -7,6 +7,7 @@ import {
   CarryOutOutlined,
   ClockCircleOutlined,
   ContactsOutlined,
+  FileDoneOutlined,
   FileTextOutlined,
   HomeFilled,
   ReadFilled,
@@ -79,6 +80,7 @@ export const SideBarContent: React.FC = () => {
     getItem('Matrizes', '/panel/matrices', <FileTextOutlined />),
     getItem('Períodos', '/panel/periods', <CalendarFilled />),
     getItem('Frequências', '/panel/attendances', <CarryOutOutlined />),
+    getItem('Notas', '/panel/grades', <FileDoneOutlined />),
   ];
 
   const [itemsToShow, setItemsToShow] = useState(items);

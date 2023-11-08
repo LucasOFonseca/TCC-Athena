@@ -20,7 +20,9 @@ export function middleware(req: NextRequest) {
 
   const authorizedRoutes = getAuthorizedRoutesByRoles(roles);
 
-  if (!authorizedRoutes.includes(pathname)) {
+  if (
+    !authorizedRoutes.some((route) => route.includes(pathname.split('/')[1]))
+  ) {
     const res = NextResponse.redirect(new URL('/panel', req.url));
 
     return res;

@@ -1,5 +1,7 @@
+export * from './calculateFinalGrade';
 export * from './dayOfWeek';
 export * from './formatCpf';
+export * from './formatGradeValue';
 export * from './formatPhoneNumber';
 export * from './getPeriodStatusProps';
 export * from './getQueryClient';

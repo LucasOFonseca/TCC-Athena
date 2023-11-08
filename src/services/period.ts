@@ -1,3 +1,4 @@
+import { DisciplineGradeConfig } from '@athena-types/disciplineGradeConfig';
 import { SuccessMessages } from '@athena-types/messages';
 import {
   CreatePeriodRequestData,
@@ -7,6 +8,7 @@ import {
   PeriodStatus,
 } from '@athena-types/period';
 import { StudentEnrollment } from '@athena-types/studentEnrollment';
+import { StudentGrade } from '@athena-types/sudentGade';
 import Api from './api';
 
 const baseUrl = '/period';
@@ -69,6 +71,58 @@ async function cancelEnrollment(
   }).then();
 }
 
+async function updateDisciplineGradeConfig(
+  periodGuid: string,
+  disciplineGuid: string,
+  data: DisciplineGradeConfig
+): Promise<DisciplineGradeConfig> {
+  return Api.put(
+    `${baseUrl}/${periodGuid}/disciplines/${disciplineGuid}/grade-config`,
+    data,
+    {
+      headers: { authHeader: true, 'success-message': SuccessMessages.MSGS02 },
+    }
+  ).then((res) => res.data);
+}
+
+async function getDisciplineGradeConfig(
+  periodGuid: string,
+  disciplineGuid: string
+): Promise<DisciplineGradeConfig> {
+  return Api.get(
+    `${baseUrl}/${periodGuid}/disciplines/${disciplineGuid}/grade-config`,
+    {
+      headers: { authHeader: true },
+    }
+  ).then((res) => res.data);
+}
+
+async function updateStudentsGrades(
+  periodGuid: string,
+  disciplineGuid: string,
+  data: StudentGrade[]
+): Promise<StudentGrade[]> {
+  return Api.put(
+    `${baseUrl}/${periodGuid}/disciplines/${disciplineGuid}/grades`,
+    data,
+    {
+      headers: { authHeader: true, 'success-message': SuccessMessages.MSGS02 },
+    }
+  ).then((res) => res.data);
+}
+
+async function getStudentsGrades(
+  periodGuid: string,
+  disciplineGuid: string
+): Promise<StudentGrade[]> {
+  return Api.get(
+    `${baseUrl}/${periodGuid}/disciplines/${disciplineGuid}/grades`,
+    {
+      headers: { authHeader: true },
+    }
+  ).then((res) => res.data);
+}
+
 export const periodService = {
   getPaginated,
   getByGuid,
@@ -78,4 +132,8 @@ export const periodService = {
   enrollStudents,
   getEnrollments,
   cancelEnrollment,
+  updateDisciplineGradeConfig,
+  getDisciplineGradeConfig,
+  updateStudentsGrades,
+  getStudentsGrades,
 };

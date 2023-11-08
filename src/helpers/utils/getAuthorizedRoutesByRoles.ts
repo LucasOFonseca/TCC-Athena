@@ -17,7 +17,11 @@ const authorizedRoutesByRole: { [key in EmployeeRole]: string[] } = {
   [EmployeeRole.coordinator]: baseRoutes,
   [EmployeeRole.secretary]: baseRoutes,
   [EmployeeRole.principal]: [...baseRoutes, `${prefix}/employees`],
-  [EmployeeRole.educator]: [prefix, `${prefix}/attendances`],
+  [EmployeeRole.educator]: [
+    prefix,
+    `${prefix}/attendances`,
+    `${prefix}/grades`,
+  ],
 };
 
 export function getAuthorizedRoutesByRoles(roles: EmployeeRole[]) {
