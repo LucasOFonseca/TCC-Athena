@@ -92,9 +92,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   );
 
   useEffect(() => {
-    if (periods) {
-      handleChangePeriod(periods[0].guid);
-    }
+    if (periods && periods.length > 0) handleChangePeriod(periods[0].guid);
   }, [periods]);
 
   useEffect(() => {
@@ -117,6 +115,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       >
         <FiltersContainer>
           <Select
+            disabled={periods && periods.length === 0}
             loading={isLoadingPeriods}
             style={{ width: '100%', maxWidth: 400 }}
             value={selectedPeriod}
@@ -128,6 +127,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           />
 
           <Select
+            disabled={periods && periods.length === 0}
             loading={isLoadingDisciplines}
             style={{ width: '100%', maxWidth: 250 }}
             value={selectedDiscipline}
