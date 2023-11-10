@@ -1,13 +1,25 @@
 import { EditOutlined } from '@ant-design/icons';
 import { DisciplineGradeConfig } from '@athena-types/disciplineGradeConfig';
+import { formatGradeValue } from '@helpers/utils';
 import { Button, Card, Tooltip } from 'antd';
+import { DisciplineConfigForm } from '../DisciplineConfigForm';
 
 interface DisciplineConfigCardProps {
+  disableEdit: boolean;
   config: DisciplineGradeConfig;
+  periodGuid: string;
+  disciplineGuid: string;
+  showForm: boolean;
+  toggleForm: () => void;
 }
 
 export const DisciplineConfigCard: React.FC<DisciplineConfigCardProps> = ({
+  disableEdit,
   config,
+  periodGuid,
+  disciplineGuid,
+  showForm,
+  toggleForm,
 }) => {
   return (
     <Card
@@ -18,18 +30,34 @@ export const DisciplineConfigCard: React.FC<DisciplineConfigCardProps> = ({
       }}
       title="Distribuição de pontos"
       extra={
-        <Tooltip placement="bottom" title="Editar">
-          <Button size="large" shape="circle" type="text">
-            <EditOutlined />
-          </Button>
-        </Tooltip>
+        !disableEdit && !showForm ? (
+          <Tooltip placement="bottom" title="Editar">
+            <Button
+              size="large"
+              shape="circle"
+              type="text"
+              onClick={toggleForm}
+            >
+              <EditOutlined />
+            </Button>
+          </Tooltip>
+        ) : null
       }
     >
-      {config.gradeItems.map((item) => (
-        <p key={item.name}>
-          <strong>{item.name}:</strong> {item.maxValue}
-        </p>
-      ))}
+      {showForm ? (
+        <DisciplineConfigForm
+          config={config}
+          periodGuid={periodGuid}
+          disciplineGuid={disciplineGuid}
+          toggleForm={toggleForm}
+        />
+      ) : (
+        config.gradeItems.map((item) => (
+          <p key={item.name}>
+            <strong>{item.name}:</strong> {formatGradeValue(item.maxValue)}
+          </p>
+        ))
+      )}
     </Card>
   );
 };

@@ -15,5 +15,7 @@ export function calculateFinalGrade(gradeItems: StudentGradeItem[]) {
 
   const sum = valuesToSum.reduce((acc, item) => acc + item.value, 0);
 
-  return Number((average + sum).toFixed(1));
+  const total = sum + average;
+
+  return Number((total > 10 ? 10 : total).toFixed(1));
 }

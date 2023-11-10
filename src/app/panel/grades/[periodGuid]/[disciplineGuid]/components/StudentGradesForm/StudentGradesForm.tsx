@@ -45,6 +45,7 @@ interface StudentGradesFormProps {
   disciplineGuid: string;
   config: DisciplineGradeConfig;
   grades: StudentGrade[];
+  onCancel: () => void;
   onSubmitFinish: () => void;
 }
 
@@ -53,6 +54,7 @@ export const StudentGradesForm: React.FC<StudentGradesFormProps> = ({
   disciplineGuid,
   config,
   grades,
+  onCancel,
   onSubmitFinish,
 }) => {
   const queryClient = useQueryClient();
@@ -94,7 +96,21 @@ export const StudentGradesForm: React.FC<StudentGradesFormProps> = ({
 
   useEffect(() => {
     if (grades.length > 0) {
-      setFieldValue('grades', grades);
+      setFieldValue(
+        'grades',
+        grades.map((grade) => ({
+          ...grade,
+          gradeItems: config.gradeItems.map((item) => ({
+            name: item.name,
+            gradeItemGuid: item.guid as string,
+            maxValue: item.maxValue,
+            type: item.type,
+            value:
+              grade.gradeItems.find((i) => i.gradeItemGuid === item.guid)
+                ?.value ?? 0,
+          })),
+        }))
+      );
     } else {
       const newGrades: StudentGrade[] =
         enrollments?.map((enrollment) => ({
@@ -125,13 +141,19 @@ export const StudentGradesForm: React.FC<StudentGradesFormProps> = ({
       <Header>
         <h5>Alunos</h5>
 
-        <Button
-          loading={updateGrades.isLoading}
-          type="primary"
-          onClick={handleSubmit}
-        >
-          Salvar
-        </Button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button danger disabled={updateGrades.isLoading} onClick={onCancel}>
+            Cancelar
+          </Button>
+
+          <Button
+            loading={updateGrades.isLoading}
+            type="primary"
+            onClick={handleSubmit}
+          >
+            Salvar
+          </Button>
+        </div>
       </Header>
 
       <Table>

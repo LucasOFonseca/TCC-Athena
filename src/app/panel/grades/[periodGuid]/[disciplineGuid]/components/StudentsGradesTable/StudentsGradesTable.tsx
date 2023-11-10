@@ -56,6 +56,7 @@ const Table = styled.table`
 `;
 
 interface StudentsGradesTableProps {
+  disableEdit: boolean;
   periodGuid: string;
   config: DisciplineGradeConfig;
   grades: StudentGrade[];
@@ -63,6 +64,7 @@ interface StudentsGradesTableProps {
 }
 
 export const StudentsGradesTable: React.FC<StudentsGradesTableProps> = ({
+  disableEdit,
   periodGuid,
   config,
   grades,
@@ -80,13 +82,15 @@ export const StudentsGradesTable: React.FC<StudentsGradesTableProps> = ({
       <Header>
         <h5>Alunos</h5>
 
-        <Button
-          type="text"
-          icon={<EditOutlined />}
-          onClick={onShowStudentsGradesForm}
-        >
-          Atribuir notas
-        </Button>
+        {!disableEdit ? (
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            onClick={onShowStudentsGradesForm}
+          >
+            Atribuir notas
+          </Button>
+        ) : null}
       </Header>
 
       <Table>
@@ -119,9 +123,19 @@ export const StudentsGradesTable: React.FC<StudentsGradesTableProps> = ({
                 <tr key={grade.guid}>
                   <td>{grade.studentName}</td>
 
-                  {grade.gradeItems.map((item) => (
-                    <td key={item.guid}>{formatGradeValue(item.value)}</td>
-                  ))}
+                  {config.gradeItems.map((item) => {
+                    const studentGrade = grade.gradeItems.find(
+                      (gradeItem) => gradeItem.gradeItemGuid === item.guid
+                    );
+
+                    return (
+                      <td key={item.guid}>
+                        {studentGrade?.value
+                          ? formatGradeValue(studentGrade.value)
+                          : '0,0'}
+                      </td>
+                    );
+                  })}
 
                   <td>{formatGradeValue(grade.finalValue)}</td>
                 </tr>

@@ -73,6 +73,8 @@ export default function GradesPage({ params }: GradesPageProps) {
   );
 
   const [showStudentsGradesForm, setShowStudentsGradesForm] = useState(false);
+  const [showDisciplineConfigForm, setShowDisciplineConfigForm] =
+    useState(false);
 
   return (
     <>
@@ -96,7 +98,18 @@ export default function GradesPage({ params }: GradesPageProps) {
 
       <h4 style={{ marginTop: 32 }}>{currentDiscipline?.name}</h4>
 
-      {config ? <DisciplineConfigCard config={config} /> : null}
+      {config ? (
+        <DisciplineConfigCard
+          disableEdit={showStudentsGradesForm}
+          config={config}
+          periodGuid={periodGuid}
+          disciplineGuid={disciplineGuid}
+          showForm={showDisciplineConfigForm}
+          toggleForm={() =>
+            setShowDisciplineConfigForm(!showDisciplineConfigForm)
+          }
+        />
+      ) : null}
 
       {config && grades ? (
         <>
@@ -106,10 +119,12 @@ export default function GradesPage({ params }: GradesPageProps) {
               disciplineGuid={disciplineGuid}
               config={config}
               grades={grades}
+              onCancel={() => setShowStudentsGradesForm(false)}
               onSubmitFinish={() => setShowStudentsGradesForm(false)}
             />
           ) : (
             <StudentsGradesTable
+              disableEdit={showDisciplineConfigForm}
               periodGuid={periodGuid}
               config={config}
               grades={grades}
