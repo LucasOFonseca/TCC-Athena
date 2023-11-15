@@ -1,7 +1,11 @@
-import { ClockCircleOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  ClockCircleOutlined,
+  EditOutlined,
+  PrinterFilled,
+} from '@ant-design/icons';
 import { DisciplineSchedule, PeriodForm } from '@athena-types/period';
 import { translateDayOfWeek } from '@helpers/utils';
-import { Alert, Button, Card, Form, FormInstance } from 'antd';
+import { Alert, Button, Card, Form, FormInstance, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 
@@ -32,7 +36,16 @@ export const DisciplineScheduleCard: React.FC<DisciplineScheduleCardProps> = ({
   ];
 
   return (
-    <StyledCard title={disciplineSchedule?.disciplineName}>
+    <StyledCard
+      title={disciplineSchedule?.disciplineName}
+      extra={
+        <Tooltip placement="bottom" title="Imprimir cronograma">
+          <Button type="text" shape="circle">
+            <PrinterFilled />
+          </Button>
+        </Tooltip>
+      }
+    >
       {disciplineSchedule?.employeeName ? (
         <div>
           <strong>Professor:</strong>

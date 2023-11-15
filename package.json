@@ -29,6 +29,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-loading-skeleton": "^3.2.0",
+    "react-to-print": "^2.14.15",
     "react-toastify": "^9.1.2",
     "styled-components": "6.0.0-beta.2",
     "sweetalert2": "^11.7.3",
