@@ -20,7 +20,7 @@ import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
-import { StudentsList } from './StudentsList';
+import { StudentsList } from './components/StudentsList';
 
 const StyledModal = styled(Modal)`
   @media (max-width: 600px) {
@@ -193,6 +193,26 @@ export const AttendanceDialogForm: React.FC<AttendanceDialogFormProps> = ({
   };
 
   useEffect(() => {
+    if (isFetching) {
+      addProgressIndicatorItem({
+        id: 'fetch-attendances',
+        message: 'Obtendo registros...',
+      });
+
+      return;
+    }
+
+    removeProgressIndicatorItem('fetch-attendances');
+
+    if (attendanceToEditGuid && attendanceToEdit) {
+      setFieldsValue({
+        ...attendanceToEdit,
+        classDate: dayjs(attendanceToEdit.classDate),
+      });
+
+      return;
+    }
+
     if (isFetchingEnrollments) {
       addProgressIndicatorItem({
         id: 'fetch-enrollments',
@@ -214,7 +234,7 @@ export const AttendanceDialogForm: React.FC<AttendanceDialogFormProps> = ({
     }
 
     removeProgressIndicatorItem('fetch-enrollments');
-  }, [isFetchingEnrollments, attendanceToEditGuid]);
+  }, [isFetchingEnrollments, attendanceToEditGuid, isFetching]);
 
   return (
     <StyledModal

@@ -64,8 +64,8 @@ const FiltersContainer = styled.div`
 interface PageHeaderProps {
   selectedPeriod: string;
   selectedDiscipline: string;
-  handleChangeDiscipline: (guid: string) => void;
-  handleChangePeriod: (guid: string) => void;
+  handleChangeDiscipline: (guid: string, name: string) => void;
+  handleChangePeriod: (guid: string, name: string) => void;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
@@ -92,12 +92,13 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   );
 
   useEffect(() => {
-    if (periods && periods.length > 0) handleChangePeriod(periods[0].guid);
+    if (periods && periods.length > 0)
+      handleChangePeriod(periods[0].guid, periods[0].name);
   }, [periods]);
 
   useEffect(() => {
     if (disciplines) {
-      handleChangeDiscipline(disciplines[0].guid);
+      handleChangeDiscipline(disciplines[0].guid, disciplines[0].name);
     }
   }, [disciplines]);
 
@@ -123,7 +124,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
               value: period.guid,
               label: period.name,
             }))}
-            onChange={handleChangePeriod}
+            onChange={(_, { value, label }: any) =>
+              handleChangePeriod(value, label)
+            }
           />
 
           <Select
@@ -135,7 +138,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
               value: discipline.guid,
               label: discipline.name,
             }))}
-            onChange={handleChangeDiscipline}
+            onChange={(_, { value, label }: any) =>
+              handleChangeDiscipline(value, label)
+            }
           />
         </FiltersContainer>
       </ClientComponentLoader>

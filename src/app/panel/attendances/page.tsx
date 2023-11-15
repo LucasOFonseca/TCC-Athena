@@ -13,7 +13,9 @@ import { PageHeader } from './components/PageHeader';
 export default function AttendancesPage() {
   const [page, setPage] = useState(1);
   const [selectedPeriod, setSelectedPeriod] = useState('');
+  const [selectedPeriodName, setSelectedPeriodName] = useState('');
   const [selectedDiscipline, setSelectedDiscipline] = useState('');
+  const [selectedDisciplineName, setSelectedDisciplineName] = useState('');
 
   const { data } = useQuery(
     ['attendanceLogs', selectedPeriod, selectedDiscipline, page],
@@ -60,12 +62,20 @@ export default function AttendancesPage() {
       <PageHeader
         selectedPeriod={selectedPeriod}
         selectedDiscipline={selectedDiscipline}
-        handleChangeDiscipline={setSelectedDiscipline}
-        handleChangePeriod={setSelectedPeriod}
+        handleChangeDiscipline={(guid, name) => {
+          setSelectedDiscipline(guid);
+          setSelectedDisciplineName(name);
+        }}
+        handleChangePeriod={(guid, name) => {
+          setSelectedPeriod(guid);
+          setSelectedPeriodName(name);
+        }}
       />
 
       <AttendancesTable
         attendances={data?.data ?? []}
+        periodName={selectedPeriodName}
+        disciplineName={selectedDisciplineName}
         onEdit={handleOpenAttendanceDialogForm}
       />
 
