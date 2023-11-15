@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
 const Footer = styled.footer`
-  padding-top: 1rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid #000;
 `;
 
 export const PrintFooter: React.FC = () => {

@@ -3,7 +3,7 @@ import { includesIgnoreDiacritics } from '@helpers/utils';
 import { matrixService } from '@services/matrix';
 import { useQuery } from '@tanstack/react-query';
 import { Form, FormInstance, Select } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface MatrixModuleSelectProps {
   form: FormInstance<PeriodForm>;
@@ -12,7 +12,7 @@ interface MatrixModuleSelectProps {
 export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
   form,
 }) => {
-  const { setFieldValue } = form;
+  const { setFieldValue, getFieldValue } = form;
 
   const selectedMatrixGuid = Form.useWatch('matrixGuid', form);
   const selectedMatrixModuleGuid = Form.useWatch('matrixModuleGuid', form);
@@ -27,6 +27,42 @@ export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
     staleTime: Infinity,
     enabled: selectedMatrixGuid !== undefined,
   });
+
+  useEffect(() => {
+    const foundMatrixModule = data?.modules.find(
+      (m) => m.guid === selectedMatrixModuleGuid
+    );
+
+    if (foundMatrixModule) {
+      const currentDisciplinesSchedule: DisciplineSchedule[] = getFieldValue(
+        'disciplinesSchedule'
+      );
+
+      if (
+        currentDisciplinesSchedule.length === 0 ||
+        currentDisciplinesSchedule.some(
+          (disciplineSchedule) =>
+            !foundMatrixModule.disciplines.some(
+              (discipline) =>
+                discipline.guid === disciplineSchedule.disciplineGuid
+            )
+        )
+      ) {
+        setFieldValue(
+          'disciplinesSchedule',
+          foundMatrixModule.disciplines.map<DisciplineSchedule>(
+            ({ guid, name }) => ({
+              disciplineGuid: guid,
+              disciplineName: name,
+              employeeGuid: '',
+              employeeName: '',
+              schedules: [],
+            })
+          )
+        );
+      }
+    }
+  }, [data]);
 
   return (
     <Form.Item
@@ -56,18 +92,34 @@ export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
               !selectedMatrixGuid ||
               foundMatrixModule.guid !== selectedMatrixModuleGuid
             ) {
-              setFieldValue(
-                'disciplinesSchedule',
-                foundMatrixModule.disciplines.map<DisciplineSchedule>(
-                  ({ guid, name }) => ({
-                    disciplineGuid: guid,
-                    disciplineName: name,
-                    employeeGuid: '',
-                    employeeName: '',
-                    schedules: [],
-                  })
+              const currentDisciplinesSchedule:
+                | DisciplineSchedule[]
+                | undefined = getFieldValue('disciplinesSchedule');
+
+              if (
+                !currentDisciplinesSchedule ||
+                currentDisciplinesSchedule.length === 0 ||
+                currentDisciplinesSchedule.some(
+                  (disciplineSchedule) =>
+                    !foundMatrixModule.disciplines.some(
+                      (discipline) =>
+                        discipline.guid === disciplineSchedule.disciplineGuid
+                    )
                 )
-              );
+              ) {
+                setFieldValue(
+                  'disciplinesSchedule',
+                  foundMatrixModule.disciplines.map<DisciplineSchedule>(
+                    ({ guid, name }) => ({
+                      disciplineGuid: guid,
+                      disciplineName: name,
+                      employeeGuid: '',
+                      employeeName: '',
+                      schedules: [],
+                    })
+                  )
+                );
+              }
             }
           }
         }}

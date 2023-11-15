@@ -1,17 +1,27 @@
-import React from 'react';
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  display: none;
   font-size: 0.875rem;
+  font-family: 'Open Sans', sans-serif !important;
+
+  @media print {
+    display: block;
+  }
 `;
 
 interface PrintContainerProps {
+  ref?: React.Ref<HTMLDivElement>;
   children?: React.ReactNode;
 }
 
-export const PrintContainer: React.FC<PrintContainerProps> = React.forwardRef(
+const PrintContainer: React.FC<PrintContainerProps> = forwardRef(
   ({ children }, ref) => {
-    return <Container>{children}</Container>;
-  },
+    return <Container ref={ref}>{children}</Container>;
+  }
 );
+
+PrintContainer.displayName = 'PrintContainer';
+
+export { PrintContainer };

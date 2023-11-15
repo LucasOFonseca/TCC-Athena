@@ -146,6 +146,7 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
 
   const selectedMatrix = Form.useWatch('matrixGuid', form);
   const selectedMatrixModule = Form.useWatch('matrixModuleGuid', form);
+  const schedules = Form.useWatch('disciplinesSchedule', form);
 
   const { resetFields, setFieldValue, setFieldsValue, validateFields } = form;
 
@@ -308,6 +309,7 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
   return (
     <StyledModal
       centered
+      destroyOnClose
       open={open}
       onCancel={handleCancel}
       title={editScheduleOnly ? 'Editar cronograma' : 'Ofertar curso/módulo'}
@@ -454,7 +456,12 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
           {selectedMatrix && <MatrixModuleSelect form={form} />}
         </div>
 
-        {selectedMatrixModule && <DisciplinesScheduleList form={form} />}
+        {selectedMatrixModule && (
+          <DisciplinesScheduleList
+            periodGuid={periodToEdit?.guid}
+            form={form}
+          />
+        )}
       </Form>
     </StyledModal>
   );

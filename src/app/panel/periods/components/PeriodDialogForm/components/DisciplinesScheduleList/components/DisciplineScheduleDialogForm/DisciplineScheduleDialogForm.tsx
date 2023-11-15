@@ -165,6 +165,7 @@ export const DisciplineScheduleDialogForm: React.FC<
   return (
     <StyledModal
       centered
+      destroyOnClose
       open={open}
       onCancel={handleCancel}
       title="Cronograma da disciplina"

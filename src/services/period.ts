@@ -6,6 +6,7 @@ import {
   PaginatedPeriodsResponse,
   Period,
   PeriodStatus,
+  SimplifiedPeriod,
 } from '@athena-types/period';
 import { StudentEnrollment } from '@athena-types/studentEnrollment';
 import { StudentGrade } from '@athena-types/sudentGade';
@@ -25,6 +26,12 @@ async function getByGuid(guid: string): Promise<Period> {
   return Api.get(`${baseUrl}/${guid}`, { headers: { authHeader: true } }).then(
     (res) => res.data
   );
+}
+
+async function getSimplified(guid: string): Promise<SimplifiedPeriod> {
+  return Api.get(`${baseUrl}/${guid}/simplified`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
 }
 
 async function create(data: CreatePeriodRequestData): Promise<Period> {
@@ -126,6 +133,7 @@ async function getStudentsGrades(
 export const periodService = {
   getPaginated,
   getByGuid,
+  getSimplified,
   create,
   update,
   cancel,

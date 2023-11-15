@@ -1,9 +1,12 @@
+import { PrinterFilled } from '@ant-design/icons';
 import { DisciplineSchedule, PeriodForm } from '@athena-types/period';
-import { Form, FormInstance } from 'antd';
-import { useState } from 'react';
+import { Button, Form, FormInstance } from 'antd';
+import { useRef, useState } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import styled from 'styled-components';
 import { DisciplineScheduleCard } from './components/DisciplineScheduleCard';
 import { DisciplineScheduleDialogForm } from './components/DisciplineScheduleDialogForm';
+import { PeriodSchedulePrint } from './components/PeriodSchedulePrint';
 
 const Container = styled.div`
   display: flex;
@@ -13,11 +16,20 @@ const Container = styled.div`
 
 interface DisciplinesScheduleListProps {
   form: FormInstance<PeriodForm>;
+  periodGuid?: string;
 }
 
 export const DisciplinesScheduleList: React.FC<
   DisciplinesScheduleListProps
-> = ({ form }) => {
+> = ({ form, periodGuid }) => {
+  const { getFieldsValue } = form;
+
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const print = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   const [
     showDisciplineScheduleDialogForm,
     setShowDisciplineScheduleDialogForm,
@@ -50,7 +62,19 @@ export const DisciplinesScheduleList: React.FC<
         onClose={handleCloseDisciplineScheduleDialogForm}
       />
 
+      {periodGuid && (
+        <PeriodSchedulePrint
+          period={getFieldsValue()}
+          periodGuid={periodGuid}
+          ref={printRef}
+        />
+      )}
+
       <Container>
+        <Button icon={<PrinterFilled />} onClick={print}>
+          Imprimir cronograma
+        </Button>
+
         <Form.List name="disciplinesSchedule">
           {(fields) => (
             <>
