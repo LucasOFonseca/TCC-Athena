@@ -111,7 +111,7 @@ export default function GradesPage({ params }: GradesPageProps) {
         />
       ) : null}
 
-      {config && grades ? (
+      {config && grades && currentPeriod && currentDiscipline ? (
         <>
           {showStudentsGradesForm ? (
             <StudentGradesForm
@@ -125,7 +125,8 @@ export default function GradesPage({ params }: GradesPageProps) {
           ) : (
             <StudentsGradesTable
               disableEdit={showDisciplineConfigForm}
-              periodGuid={periodGuid}
+              period={currentPeriod}
+              discipline={currentDiscipline}
               config={config}
               grades={grades}
               onShowStudentsGradesForm={() => setShowStudentsGradesForm(true)}

@@ -1,11 +1,15 @@
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, PrinterFilled } from '@ant-design/icons';
 import { DisciplineGradeConfig } from '@athena-types/disciplineGradeConfig';
+import { FilterItem } from '@athena-types/filterItem';
 import { StudentGrade } from '@athena-types/sudentGade';
 import { formatGradeValue } from '@helpers/utils';
 import { periodService } from '@services/period';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from 'antd';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import styled from 'styled-components';
+import { StudentsGradesPrint } from '../StudentsGradesPrint';
 
 const Header = styled.div`
   display: flex;
@@ -57,7 +61,8 @@ const Table = styled.table`
 
 interface StudentsGradesTableProps {
   disableEdit: boolean;
-  periodGuid: string;
+  period: FilterItem;
+  discipline: FilterItem;
   config: DisciplineGradeConfig;
   grades: StudentGrade[];
   onShowStudentsGradesForm: () => void;
@@ -65,31 +70,53 @@ interface StudentsGradesTableProps {
 
 export const StudentsGradesTable: React.FC<StudentsGradesTableProps> = ({
   disableEdit,
-  periodGuid,
+  period,
+  discipline,
   config,
   grades,
   onShowStudentsGradesForm,
 }) => {
   const { data: enrollments } = useQuery({
-    queryKey: ['periodEnrollments', periodGuid],
-    queryFn: () => periodService.getEnrollments(periodGuid ?? ''),
+    queryKey: ['periodEnrollments', period.guid],
+    queryFn: () => periodService.getEnrollments(period.guid),
     staleTime: Infinity,
-    enabled: !!periodGuid && grades.length === 0,
+    enabled: grades.length === 0,
+  });
+
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const print = useReactToPrint({
+    content: () => printRef.current,
   });
 
   return (
     <>
+      <StudentsGradesPrint
+        ref={printRef}
+        periodName={period.name}
+        disciplineName={discipline.name}
+        grades={grades}
+        config={config}
+        enrollments={enrollments}
+      />
+
       <Header>
         <h5>Alunos</h5>
 
         {!disableEdit ? (
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={onShowStudentsGradesForm}
-          >
-            Atribuir notas
-          </Button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button type="text" icon={<PrinterFilled />} onClick={print}>
+              Imprimir
+            </Button>
+
+            <Button
+              type="text"
+              icon={<EditOutlined />}
+              onClick={onShowStudentsGradesForm}
+            >
+              Atribuir notas
+            </Button>
+          </div>
         ) : null}
       </Header>
 
