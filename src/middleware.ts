@@ -4,7 +4,7 @@ import decode from 'jwt-decode';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
-  matcher: '/panel/:path*',
+  matcher: ['/panel/:path*', '/student/:path*'],
 };
 
 export function middleware(req: NextRequest) {
@@ -12,20 +12,20 @@ export function middleware(req: NextRequest) {
 
   const accessToken = req.cookies.get('alohomora');
 
-  if (!accessToken) {
-    return NextResponse.redirect(new URL('/', req.url));
-  }
+  if (!accessToken) return NextResponse.redirect(new URL('/', req.url));
 
   const { roles } = decode(accessToken.value) as { roles: EmployeeRole[] };
 
-  const authorizedRoutes = getAuthorizedRoutesByRoles(roles);
+  if (pathname.startsWith('/panel')) {
+    const authorizedRoutes = getAuthorizedRoutesByRoles(roles);
 
-  if (
-    !authorizedRoutes.some((route) => route.includes(pathname.split('/')[1]))
-  ) {
-    const res = NextResponse.redirect(new URL('/panel', req.url));
+    if (
+      !authorizedRoutes.some((route) => route.includes(pathname.split('/')[1]))
+    ) {
+      const res = NextResponse.redirect(new URL('/panel', req.url));
 
-    return res;
+      return res;
+    }
   }
 
   return NextResponse.next();
