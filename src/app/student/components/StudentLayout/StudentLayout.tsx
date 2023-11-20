@@ -21,7 +21,11 @@ const Main = styled.main`
   }
 `;
 
-export function PanelLayout({ children }: { children: React.ReactNode }) {
+interface StudentLayoutProps {
+  children?: React.ReactNode;
+}
+
+export const StudentLayout: React.FC<StudentLayoutProps> = ({ children }) => {
   return (
     <>
       <Header />
@@ -32,4 +36,4 @@ export function PanelLayout({ children }: { children: React.ReactNode }) {
       </Main>
     </>
   );
-}
+};

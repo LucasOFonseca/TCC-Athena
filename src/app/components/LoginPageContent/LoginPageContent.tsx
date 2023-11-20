@@ -5,8 +5,10 @@ import { ErrorMessages } from '@athena-types/messages';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { SquareLoader } from '@components/SquareLoader';
 import { authService } from '@services/auth';
+import { useUser } from '@stores/useUser';
 import { Button, Form, Input } from 'antd';
 import { setCookie } from 'cookies-next';
+import decode from 'jwt-decode';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -82,6 +84,8 @@ const Main = styled.main`
 export const LoginPageContent: React.FC = () => {
   const { push } = useRouter();
 
+  const { setUserInfo } = useUser();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const initialValues = {
@@ -95,11 +99,26 @@ export const LoginPageContent: React.FC = () => {
     authService
       .login(email, password)
       .then((token) => {
+        const { roles, ...user } = decode(token) as {
+          roles: string[];
+          email: string;
+          name: string;
+        };
+
+        setUserInfo(user);
+
         setCookie('alohomora', token, {
           maxAge: 60 * 60 * 24 * 30,
           path: '/',
           secure: true,
         });
+
+        if (!roles.length) {
+          push('/student');
+
+          return;
+        }
+
         push('/panel');
       })
       .finally(() => setIsLoading(false));

@@ -1,6 +1,8 @@
 'use client';
 
 import { BarChartOutlined } from '@ant-design/icons';
+import { useHydratePersistedState } from '@helpers/hooks';
+import { useUser } from '@stores/useUser';
 import styled from 'styled-components';
 
 const ContentPlaceholder = styled.div`
@@ -27,9 +29,11 @@ const CardPlaceholder = styled.div`
 `;
 
 export default function Panel() {
+  const user = useHydratePersistedState(useUser(({ user }) => user));
+
   return (
     <>
-      <h4>Bem-vindo(a) ao Athena</h4>
+      <h4>Olá {user?.name}, bem-vindo(a) ao Athena</h4>
 
       <div style={{ display: 'flex', gap: 16, marginTop: 32 }}>
         <CardPlaceholder />

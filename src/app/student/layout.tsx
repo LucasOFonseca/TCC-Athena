@@ -1,5 +1,5 @@
-import { PanelLayout } from './components/PanelLayout';
+import { StudentLayout } from './components/StudentLayout';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <PanelLayout>{children}</PanelLayout>;
+  return <StudentLayout>{children}</StudentLayout>;
 }

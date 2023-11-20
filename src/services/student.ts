@@ -5,6 +5,10 @@ import {
   PaginatedRequestParams,
 } from '@athena-types/paginatedData';
 import { CreateStudentRequestData, Student } from '@athena-types/student';
+import {
+  StudentPeriod,
+  StudentPeriodDetails,
+} from '@athena-types/studentPeriod';
 import Api from './api';
 
 const baseUrl = '/student';
@@ -15,6 +19,20 @@ async function getPaginated(
   return Api.get(baseUrl, { params, headers: { authHeader: true } }).then(
     (res) => res.data
   );
+}
+
+async function getPeriods(): Promise<StudentPeriod[]> {
+  return Api.get(`${baseUrl}/periods`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
+async function getPeriodDetails(
+  periodGuid: string
+): Promise<StudentPeriodDetails> {
+  return Api.get(`${baseUrl}/periods/${periodGuid}/details`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
 }
 
 async function create(data: CreateStudentRequestData): Promise<Student> {
@@ -52,6 +70,8 @@ async function resetPassword(guid: string): Promise<Student> {
 
 export const studentService = {
   getPaginated,
+  getPeriods,
+  getPeriodDetails,
   create,
   update,
   changeStatus,

@@ -1,7 +1,12 @@
 'use client';
 
-import { BarChartOutlined } from '@ant-design/icons';
+import { useHydratePersistedState } from '@helpers/hooks';
+import { studentService } from '@services/student';
+import { useUser } from '@stores/useUser';
+import { useQuery } from '@tanstack/react-query';
+import { Divider } from 'antd';
 import styled from 'styled-components';
+import { PeriodCard } from './components/PeriodCard';
 
 const ContentPlaceholder = styled.div`
   display: flex;
@@ -27,20 +32,25 @@ const CardPlaceholder = styled.div`
 `;
 
 export default function Panel() {
+  const user = useHydratePersistedState(useUser(({ user }) => user));
+
+  const { data } = useQuery(['student', 'periods'], studentService.getPeriods);
+
   return (
     <>
-      <h4>Bem-vindo(a) ao Athena</h4>
+      <h4 style={{ marginBottom: 32 }}>
+        Olá {user?.name}, bem-vindo(a) ao Athena
+      </h4>
 
-      <div style={{ display: 'flex', gap: 16, marginTop: 32 }}>
-        <CardPlaceholder />
-        <CardPlaceholder />
-        <CardPlaceholder />
-        <CardPlaceholder />
+      <h5>Cursos</h5>
+
+      <Divider orientation="left" style={{ margin: 0 }} />
+
+      <div style={{ display: 'flex', gap: 16, marginTop: 16 }}>
+        {data?.map((period) => (
+          <PeriodCard key={period.guid} period={period} />
+        ))}
       </div>
-
-      <ContentPlaceholder>
-        <BarChartOutlined style={{ fontSize: 48 }} />
-      </ContentPlaceholder>
     </>
   );
 }

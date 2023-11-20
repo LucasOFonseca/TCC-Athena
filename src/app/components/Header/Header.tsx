@@ -1,13 +1,16 @@
 'use client';
 
 import { MenuOutlined } from '@ant-design/icons';
+import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { useSideBarController } from '@stores/useSideBarController';
 import { Button } from 'antd';
 import styled from 'styled-components';
+import { UserAccountDropdown } from './components/UserAccountDropdown';
 
 const Container = styled.header`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 64px;
   position: fixed;
@@ -33,6 +36,12 @@ const OpenSideBarButton = styled(Button)`
   }
 `;
 
+const ButtonPlaceholder = styled.div`
+  display: none;
+  width: 48px;
+  height: 40px;
+`;
+
 export const Header: React.FC = () => {
   const { handleOpen } = useSideBarController();
 
@@ -41,6 +50,12 @@ export const Header: React.FC = () => {
       <OpenSideBarButton type="text" onClick={handleOpen}>
         <MenuOutlined />
       </OpenSideBarButton>
+
+      <ButtonPlaceholder />
+
+      <ClientComponentLoader>
+        <UserAccountDropdown />
+      </ClientComponentLoader>
     </Container>
   );
 };
