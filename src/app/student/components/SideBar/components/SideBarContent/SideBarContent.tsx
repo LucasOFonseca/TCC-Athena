@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  CarryOutOutlined,
-  FileDoneOutlined,
-  HomeFilled,
-} from '@ant-design/icons';
+import { HomeFilled } from '@ant-design/icons';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { Menu, MenuProps } from 'antd';
 import Image from 'next/image';
@@ -14,11 +10,7 @@ import styled from 'styled-components';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
-  getItem('Home', '/student', <HomeFilled />),
-  getItem('Frequências', '/student/attendances', <CarryOutOutlined />),
-  getItem('Notas', '/student/grades', <FileDoneOutlined />),
-];
+const items: MenuItem[] = [getItem('Home', '/student', <HomeFilled />)];
 
 const LogoContainer = styled.div`
   display: flex;

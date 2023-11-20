@@ -8,6 +8,7 @@ import { CreateStudentRequestData, Student } from '@athena-types/student';
 import {
   StudentPeriod,
   StudentPeriodDetails,
+  StudentPeriodMatrix,
 } from '@athena-types/studentPeriod';
 import Api from './api';
 
@@ -31,6 +32,14 @@ async function getPeriodDetails(
   periodGuid: string
 ): Promise<StudentPeriodDetails> {
   return Api.get(`${baseUrl}/periods/${periodGuid}/details`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
+async function getPeriodMatrix(
+  periodGuid: string
+): Promise<StudentPeriodMatrix> {
+  return Api.get(`${baseUrl}/periods/${periodGuid}/matrix`, {
     headers: { authHeader: true },
   }).then((res) => res.data);
 }
@@ -72,6 +81,7 @@ export const studentService = {
   getPaginated,
   getPeriods,
   getPeriodDetails,
+  getPeriodMatrix,
   create,
   update,
   changeStatus,

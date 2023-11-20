@@ -35,3 +35,23 @@ export interface StudentPeriodDetails extends StudentPeriodBase {
   enrollmentNumber: string;
   disciplines: StudentPeriodDiscipline[];
 }
+
+export interface StudentPeriodMatrixModuleDiscipline {
+  guid: string;
+  name: string;
+  workload: number;
+  syllabus: string;
+}
+
+export interface StudentPeriodMatrixModule {
+  guid: string;
+  name: string;
+  disciplines: StudentPeriodMatrixModuleDiscipline[];
+}
+
+export interface StudentPeriodMatrix {
+  course: string;
+  name: string;
+  totalWorkload: number;
+  modules: StudentPeriodMatrixModule[];
+}

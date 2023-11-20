@@ -1,4 +1,5 @@
 import { MoreOutlined } from '@ant-design/icons';
+import { PeriodStatus } from '@athena-types/period';
 import { StudentPeriod } from '@athena-types/studentPeriod';
 import { getPeriodStatusProps } from '@helpers/utils';
 import { Button, Card, Dropdown } from 'antd';
@@ -52,17 +53,27 @@ export const PeriodCard: React.FC<PeriodCardProps> = ({ period }) => {
           arrow
           placement="bottomLeft"
           menu={{
-            items: [
-              {
-                key: '1',
-                label: 'Ver matriz',
-              },
-              {
-                key: '2',
-                label: 'Histórico',
-                onClick: () => push(`/student/${period.guid}/details`),
-              },
-            ],
+            items:
+              period.status !== PeriodStatus.openForEnrollment
+                ? [
+                    {
+                      key: '1',
+                      label: 'Ver matriz',
+                      onClick: () => push(`/student/${period.guid}/matrix`),
+                    },
+                    {
+                      key: '2',
+                      label: 'Histórico',
+                      onClick: () => push(`/student/${period.guid}/details`),
+                    },
+                  ]
+                : [
+                    {
+                      key: '1',
+                      label: 'Ver matriz',
+                      onClick: () => push(`/student/${period.guid}/matrix`),
+                    },
+                  ],
           }}
         >
           <Button size="middle" type="text" shape="circle">
