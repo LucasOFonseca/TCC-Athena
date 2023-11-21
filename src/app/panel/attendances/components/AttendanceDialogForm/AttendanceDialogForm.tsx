@@ -234,11 +234,12 @@ export const AttendanceDialogForm: React.FC<AttendanceDialogFormProps> = ({
     }
 
     removeProgressIndicatorItem('fetch-enrollments');
-  }, [isFetchingEnrollments, attendanceToEditGuid, isFetching]);
+  }, [isFetchingEnrollments, attendanceToEditGuid, open, isFetching]);
 
   return (
     <StyledModal
       centered
+      destroyOnClose
       open={open}
       onCancel={handleCancel}
       title={`${attendanceToEdit ? 'Editar' : 'Novo'} registro`}

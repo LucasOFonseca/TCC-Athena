@@ -1,9 +1,12 @@
 'use client';
 
-import { BarChartOutlined } from '@ant-design/icons';
+import { EmployeeRole } from '@athena-types/employee';
 import { useHydratePersistedState } from '@helpers/hooks';
 import { useUser } from '@stores/useUser';
+import { Divider } from 'antd';
 import styled from 'styled-components';
+import { EmployeePeriodsSection } from './components/EmployeePeriodsSection';
+import { EmployeeSchedulesSection } from './components/EmployeeSchedulesSection';
 
 const ContentPlaceholder = styled.div`
   display: flex;
@@ -33,18 +36,17 @@ export default function Panel() {
 
   return (
     <>
-      <h4>Olá {user?.name}, bem-vindo(a) ao Athena</h4>
+      <h4>Olá {user?.name.split(' ')[0]}, bem-vindo(a) ao Athena</h4>
 
-      <div style={{ display: 'flex', gap: 16, marginTop: 32 }}>
-        <CardPlaceholder />
-        <CardPlaceholder />
-        <CardPlaceholder />
-        <CardPlaceholder />
-      </div>
+      {user?.roles.some((role) => role === EmployeeRole.educator) ? (
+        <>
+          <EmployeePeriodsSection />
 
-      <ContentPlaceholder>
-        <BarChartOutlined style={{ fontSize: 48 }} />
-      </ContentPlaceholder>
+          <Divider />
+
+          <EmployeeSchedulesSection />
+        </>
+      ) : null}
     </>
   );
 }

@@ -3,6 +3,7 @@ import {
   Employee,
   EmployeePaginatedRequestParams,
 } from '@athena-types/employee';
+import { EmployeePeriod } from '@athena-types/employeePeriod';
 import { FilterItem } from '@athena-types/filterItem';
 import { GenericStatus } from '@athena-types/genericStatus';
 import { SuccessMessages } from '@athena-types/messages';
@@ -26,7 +27,7 @@ async function getSchedules(guid: string): Promise<DisciplineSchedule[]> {
   }).then((res) => res.data);
 }
 
-async function getPeriods(): Promise<FilterItem[]> {
+async function getPeriods(): Promise<EmployeePeriod[]> {
   return Api.get(`${baseUrl}/periods`, {
     headers: { authHeader: true },
   }).then((res) => res.data);

@@ -37,6 +37,8 @@ interface StudentsListProps {
 }
 
 export const StudentsList: React.FC<StudentsListProps> = ({ form }) => {
+  const { setFieldValue } = form;
+
   const studentAbsences = Form.useWatch('studentAbsences', form);
   const totalClasses = Form.useWatch('totalClasses', form);
 
@@ -72,6 +74,14 @@ export const StudentsList: React.FC<StudentsListProps> = ({ form }) => {
                       min={0}
                       max={totalClasses}
                       style={{ width: 65 }}
+                      onFocus={({ target }) => {
+                        if (target.value !== '0') return;
+
+                        setFieldValue(
+                          ['studentAbsences', field.name, 'totalAbsences'],
+                          totalClasses
+                        );
+                      }}
                     />
                   </Form.Item>
                 </td>

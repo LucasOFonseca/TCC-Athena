@@ -1,6 +1,7 @@
 'use client';
 
 import { LockFilled, UserOutlined } from '@ant-design/icons';
+import { EmployeeRole } from '@athena-types/employee';
 import { ErrorMessages } from '@athena-types/messages';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { SquareLoader } from '@components/SquareLoader';
@@ -99,13 +100,19 @@ export const LoginPageContent: React.FC = () => {
     authService
       .login(email, password)
       .then((token) => {
-        const { roles, ...user } = decode(token) as {
-          roles: string[];
+        const {
+          roles,
+          email,
+          name,
+          sub: guid,
+        } = decode(token) as {
+          roles: EmployeeRole[];
           email: string;
           name: string;
+          sub: string;
         };
 
-        setUserInfo(user);
+        setUserInfo({ roles, email, name, guid });
 
         setCookie('alohomora', token, {
           maxAge: 60 * 60 * 24 * 30,

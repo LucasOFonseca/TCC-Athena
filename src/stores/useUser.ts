@@ -1,9 +1,12 @@
+import { EmployeeRole } from '@athena-types/employee';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface UserInfo {
+  guid: string;
   name: string;
   email: string;
+  roles: EmployeeRole[];
 }
 
 interface UserState {
