@@ -104,15 +104,17 @@ export const LoginPageContent: React.FC = () => {
           roles,
           email,
           name,
+          cpf,
           sub: guid,
         } = decode(token) as {
           roles: EmployeeRole[];
           email: string;
           name: string;
+          cpf: string;
           sub: string;
         };
 
-        setUserInfo({ roles, email, name, guid });
+        setUserInfo({ roles, email, name, cpf, guid });
 
         setCookie('alohomora', token, {
           maxAge: 60 * 60 * 24 * 30,

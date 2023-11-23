@@ -5,9 +5,11 @@ const Container = styled.div`
   display: none;
   font-size: 0.875rem;
   font-family: 'Open Sans', sans-serif !important;
+  height: 100vh;
 
   @media print {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 `;
 

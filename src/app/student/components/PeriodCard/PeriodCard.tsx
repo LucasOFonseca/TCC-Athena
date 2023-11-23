@@ -33,12 +33,26 @@ const StatusChip = styled.div`
 
 interface PeriodCardProps {
   period: StudentPeriod;
+  onPrint: (guid: string) => void;
 }
 
-export const PeriodCard: React.FC<PeriodCardProps> = ({ period }) => {
+export const PeriodCard: React.FC<PeriodCardProps> = ({ period, onPrint }) => {
   const { push } = useRouter();
 
   const { color, icon, translated } = getPeriodStatusProps(period.status);
+
+  const defaultItems = [
+    {
+      key: '1',
+      label: 'Ver matriz',
+      onClick: () => push(`/student/${period.guid}/matrix`),
+    },
+    {
+      key: '2',
+      label: 'Declaração de matricula',
+      onClick: () => onPrint(period.guid),
+    },
+  ];
 
   return (
     <Container
@@ -56,24 +70,14 @@ export const PeriodCard: React.FC<PeriodCardProps> = ({ period }) => {
             items:
               period.status !== PeriodStatus.openForEnrollment
                 ? [
+                    ...defaultItems,
                     {
-                      key: '1',
-                      label: 'Ver matriz',
-                      onClick: () => push(`/student/${period.guid}/matrix`),
-                    },
-                    {
-                      key: '2',
+                      key: defaultItems.length + 1,
                       label: 'Histórico',
                       onClick: () => push(`/student/${period.guid}/details`),
                     },
                   ]
-                : [
-                    {
-                      key: '1',
-                      label: 'Ver matriz',
-                      onClick: () => push(`/student/${period.guid}/matrix`),
-                    },
-                  ],
+                : defaultItems,
           }}
         >
           <Button size="middle" type="text" shape="circle">
