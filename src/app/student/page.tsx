@@ -6,34 +6,10 @@ import { useUser } from '@stores/useUser';
 import { useQuery } from '@tanstack/react-query';
 import { Divider } from 'antd';
 import { useState } from 'react';
-import styled from 'styled-components';
 import { EnrollmentDeclarationPrint } from './components/EnrollmentDeclarationPrint';
 import { PeriodCard } from './components/PeriodCard';
 
-const ContentPlaceholder = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-  border-radius: 8px;
-  background-color: #f0f0f0;
-  color: #a0a0a0;
-  margin-top: 32px;
-`;
-
-const CardPlaceholder = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 125px;
-  width: 100%;
-  border-radius: 8px;
-  background-color: #f0f0f0;
-`;
-
-export default function Panel() {
+export default function StudentPanel() {
   const user = useHydratePersistedState(useUser(({ user }) => user));
 
   const { data } = useQuery(['student', 'periods'], studentService.getPeriods);
@@ -48,7 +24,7 @@ export default function Panel() {
       />
 
       <h4 style={{ marginBottom: 32 }}>
-        Olá {user?.name}, bem-vindo(a) ao Athena
+        Olá {user?.name.split(' ')[0]}, bem-vindo(a) ao Athena
       </h4>
 
       <h5>Cursos</h5>

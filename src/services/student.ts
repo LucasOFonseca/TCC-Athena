@@ -5,6 +5,7 @@ import {
   PaginatedRequestParams,
 } from '@athena-types/paginatedData';
 import { CreateStudentRequestData, Student } from '@athena-types/student';
+import { StudentAvailableCertificate } from '@athena-types/studentAvailableCertificate';
 import {
   StudentPeriod,
   StudentPeriodDetails,
@@ -20,6 +21,14 @@ async function getPaginated(
   return Api.get(baseUrl, { params, headers: { authHeader: true } }).then(
     (res) => res.data
   );
+}
+
+async function getAvailableCertificates(): Promise<
+  StudentAvailableCertificate[]
+> {
+  return Api.get(`${baseUrl}/available-certificates`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
 }
 
 async function getPeriods(): Promise<StudentPeriod[]> {
@@ -79,6 +88,7 @@ async function resetPassword(guid: string): Promise<Student> {
 
 export const studentService = {
   getPaginated,
+  getAvailableCertificates,
   getPeriods,
   getPeriodDetails,
   getPeriodMatrix,
