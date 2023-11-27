@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import styled from 'styled-components';
 
 const Header = styled.header`
-  padding: 1rem 1rem 0.5rem;
+  padding: 2rem 2rem 0.5rem;
   display: flex;
   align-items: end;
   justify-content: space-between;

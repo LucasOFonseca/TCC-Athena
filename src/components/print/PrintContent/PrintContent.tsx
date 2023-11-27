@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Container = styled.main`
   margin: 1rem 0;
-  padding: 0 0.5rem;
+  padding: 0 2.5rem;
 `;
 
 interface PrintContentProps {
