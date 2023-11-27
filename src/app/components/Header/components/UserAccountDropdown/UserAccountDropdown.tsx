@@ -78,7 +78,7 @@ export const UserAccountDropdown: React.FC = () => {
       }}
     >
       <AccountButton type="text" icon={<UserOutlined />}>
-        {userState?.user?.name}
+        {userState?.user?.name.split(' ')[0]}
       </AccountButton>
     </Dropdown>
   );

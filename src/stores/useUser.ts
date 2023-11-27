@@ -6,6 +6,7 @@ interface UserInfo {
   guid: string;
   name: string;
   email: string;
+  cpf: string;
   roles: EmployeeRole[];
 }
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.main`
+  flex: 1;
   margin: 1rem 0;
   padding: 0 2.5rem;
 `;
