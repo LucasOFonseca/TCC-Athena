@@ -7,6 +7,7 @@ import { useReactToPrint } from 'react-to-print';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  position: relative;
   width: calc(100% - 4rem);
   height: calc(100vh - 4rem);
   display: none;
@@ -91,7 +92,21 @@ export const CertificatePrint: React.FC<CertificatePrintProps> = ({
         <strong>{dayjs(certificate?.finishDate).format('DD/MM/YYYY')}</strong>.
       </p>
 
-      <i>{certificate?.principalName}</i>
+      <i
+        style={{
+          position: 'absolute',
+          bottom: '4rem',
+          right: '4rem',
+          minWidth: 250,
+          borderTop: '1px solid #000',
+          paddingTop: 8,
+          textAlign: 'center',
+        }}
+      >
+        {certificate?.principalName}
+        <br />
+        <strong>Diretor(a)</strong>
+      </i>
     </Container>
   );
 };

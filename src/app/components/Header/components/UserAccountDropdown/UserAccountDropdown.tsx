@@ -55,7 +55,7 @@ export const UserAccountDropdown: React.FC = () => {
           <Divider style={{ margin: 0 }} />
 
           {cloneElement(menu as React.ReactElement, {
-            style: { width: 200, boxShadow: 'none' },
+            style: { minWidth: 200, width: '100%', boxShadow: 'none' },
           })}
         </div>
       )}
