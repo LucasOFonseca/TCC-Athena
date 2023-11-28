@@ -4,4 +4,5 @@ export interface StudentAvailableCertificate {
   enrollmentNumber: string;
   finishDate: string;
   totalWorkload: number;
+  principalName: string;
 }

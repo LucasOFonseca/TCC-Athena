@@ -90,6 +90,8 @@ export const CertificatePrint: React.FC<CertificatePrintProps> = ({
         , finalizado em{' '}
         <strong>{dayjs(certificate?.finishDate).format('DD/MM/YYYY')}</strong>.
       </p>
+
+      <i>{certificate?.principalName}</i>
     </Container>
   );
 };
