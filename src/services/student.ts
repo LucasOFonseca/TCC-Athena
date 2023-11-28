@@ -11,6 +11,7 @@ import {
   StudentPeriodDetails,
   StudentPeriodMatrix,
 } from '@athena-types/studentPeriod';
+import { SchedulesByShift } from '@athena-types/studentSchedule';
 import Api from './api';
 
 const baseUrl = '/student';
@@ -49,6 +50,12 @@ async function getPeriodMatrix(
   periodGuid: string
 ): Promise<StudentPeriodMatrix> {
   return Api.get(`${baseUrl}/periods/${periodGuid}/matrix`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
+async function getSchedules(): Promise<SchedulesByShift> {
+  return Api.get(`${baseUrl}/schedules`, {
     headers: { authHeader: true },
   }).then((res) => res.data);
 }
@@ -92,6 +99,7 @@ export const studentService = {
   getPeriods,
   getPeriodDetails,
   getPeriodMatrix,
+  getSchedules,
   create,
   update,
   changeStatus,

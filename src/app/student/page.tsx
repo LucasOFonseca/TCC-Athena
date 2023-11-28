@@ -8,11 +8,19 @@ import { Divider } from 'antd';
 import { useState } from 'react';
 import { EnrollmentDeclarationPrint } from './components/EnrollmentDeclarationPrint';
 import { PeriodCard } from './components/PeriodCard';
+import { SchedulesTable } from './components/SchedulesTable';
 
 export default function StudentPanel() {
   const user = useHydratePersistedState(useUser(({ user }) => user));
 
-  const { data } = useQuery(['student', 'periods'], studentService.getPeriods);
+  const { data: periods } = useQuery(
+    ['student', 'periods'],
+    studentService.getPeriods
+  );
+  const { data: schedules } = useQuery(
+    ['student', 'schedules'],
+    studentService.getSchedules
+  );
 
   const [periodGuid, setPeriodGuid] = useState<string>();
 
@@ -32,7 +40,7 @@ export default function StudentPanel() {
       <Divider orientation="left" style={{ margin: 0 }} />
 
       <div style={{ display: 'flex', gap: 16, marginTop: 16 }}>
-        {data?.map((period) => (
+        {periods?.map((period) => (
           <PeriodCard
             key={period.guid}
             period={period}
@@ -40,6 +48,16 @@ export default function StudentPanel() {
           />
         ))}
       </div>
+
+      {schedules ? (
+        <>
+          <h5 style={{ marginTop: 48 }}>Horários</h5>
+
+          <Divider orientation="left" style={{ margin: 0 }} />
+
+          <SchedulesTable schedules={schedules} />
+        </>
+      ) : null}
     </>
   );
 }

@@ -43,6 +43,7 @@ export const PeriodDisciplinesTable: React.FC<PeriodDisciplinesTableProps> = ({
           <th>Disciplina</th>
           <th>Faltas</th>
           <th>Nota</th>
+          <th>Situação</th>
         </tr>
       </thead>
 
@@ -89,6 +90,10 @@ export const PeriodDisciplinesTable: React.FC<PeriodDisciplinesTableProps> = ({
                 </span>
               </td>
             </Dropdown>
+
+            <td style={{ color: discipline.finalGrade > 6 ? 'green' : 'red' }}>
+              {discipline.finalGrade > 6 ? 'Aprovado' : 'Reprovado'}
+            </td>
           </tr>
         ))}
       </tbody>
