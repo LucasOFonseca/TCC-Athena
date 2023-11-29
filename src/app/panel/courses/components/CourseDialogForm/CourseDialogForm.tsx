@@ -4,7 +4,7 @@ import { Course, CreateCourseRequestData } from '@athena-types/course';
 import { ErrorMessages } from '@athena-types/messages';
 import { courseService } from '@services/course';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, InputNumber, Modal } from 'antd';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
@@ -163,6 +163,7 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
     if (courseToEdit) {
       setFieldsValue({
         name: courseToEdit.name,
+        minPassingGrade: courseToEdit.minPassingGrade,
       });
     }
   }, [courseToEdit]); // eslint-disable-line
@@ -200,6 +201,7 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
         form={form}
         initialValues={{
           name: '',
+          minPassingGrade: 6,
         }}
       >
         <Form.Item
@@ -213,6 +215,21 @@ export const CourseDialogForm: React.FC<CourseDialogFormProps> = ({
           ]}
         >
           <Input size="large" placeholder="Dê um nome para o curso" />
+        </Form.Item>
+
+        <Form.Item
+          required
+          label="Nota mínima de aprovação"
+          name="minPassingGrade"
+          rules={[{ required: true, message: '' }]}
+        >
+          <InputNumber
+            size="large"
+            min={1}
+            max={10}
+            decimalSeparator=","
+            style={{ width: '100%' }}
+          />
         </Form.Item>
       </Form>
     </StyledModal>

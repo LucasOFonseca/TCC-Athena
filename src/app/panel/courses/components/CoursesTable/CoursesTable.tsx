@@ -6,6 +6,7 @@ import { GenericStatus } from '@athena-types/genericStatus';
 import { ClientComponentLoader } from '@components/ClientComponentLoader';
 import { StatusButton } from '@components/StatusButton';
 import { useChangeStatusConfirmation } from '@helpers/hooks';
+import { formatGradeValue } from '@helpers/utils';
 import { courseService } from '@services/course';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Table, Tooltip } from 'antd';
@@ -60,6 +61,13 @@ export const CoursesTable: React.FC<CoursesTableProps> = ({
               dataIndex: 'name',
               key: 'name',
               align: 'left',
+            },
+            {
+              title: 'Nota min. para aprovação',
+              dataIndex: 'minPassingGrade',
+              key: 'minPassingGrade',
+              align: 'left',
+              render: (value) => formatGradeValue(value),
             },
             {
               dataIndex: 'actions',
