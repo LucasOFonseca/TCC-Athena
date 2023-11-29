@@ -77,7 +77,7 @@ export const ClassroomSelect: React.FC<ClassroomSelectProps> = ({ form }) => {
         options={data?.data
           ?.filter((classroom) => classroom.capacity >= (vacancies ?? 0))
           .map((classroom) => ({
-            label: classroom.name,
+            label: `${classroom.name} (Cap. ${classroom.capacity})`,
             value: classroom.guid,
           }))}
         filterOption={(input, option) =>
