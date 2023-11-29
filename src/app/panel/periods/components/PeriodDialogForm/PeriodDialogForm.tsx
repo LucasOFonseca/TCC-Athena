@@ -10,7 +10,15 @@ import {
 import { periodService } from '@services/period';
 import { useProgressIndicator } from '@stores/useProgressIndicator';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, DatePicker, Form, Input, Modal, Select, Space } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Form,
+  InputNumber,
+  Modal,
+  Select,
+  Space,
+} from 'antd';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import styled from 'styled-components';
@@ -428,7 +436,13 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
             </Form.Item>
 
             <Form.Item label="Vagas" name="vacancies">
-              <Input size="large" type="number" defaultValue={40} />
+              <InputNumber
+                size="large"
+                min={1}
+                max={100}
+                defaultValue={40}
+                style={{ width: '100%' }}
+              />
             </Form.Item>
 
             <StyledSpace>
