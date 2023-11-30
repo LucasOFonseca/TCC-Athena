@@ -6,5 +6,6 @@ export * from './formatPhoneNumber';
 export * from './getPeriodStatusProps';
 export * from './getQueryClient';
 export * from './getRoleProps';
+export * from './getStudentGradeStatusProps';
 export * from './search';
 export * from './translateShift';

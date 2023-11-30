@@ -1,6 +1,12 @@
 import { FilterItem } from './filterItem';
 import { PeriodStatus } from './period';
 
+export enum StudentGradeStatus {
+  pass = 'pass',
+  fail = 'fail',
+  pending = 'pending',
+}
+
 interface StudentPeriodBase {
   guid: string;
   deadline?: string;
@@ -21,19 +27,26 @@ export interface StudentPeriodDisciplineGrade {
 export interface StudentPeriodDiscipline {
   guid: string;
   name: string;
+  status: StudentGradeStatus;
   totalAbsences: number;
   finalGrade: number;
   grades: StudentPeriodDisciplineGrade[];
+}
+
+export interface StudentPeriodModule {
+  guid: string;
+  name: string;
+  disciplines: StudentPeriodDiscipline[];
 }
 
 export interface StudentPeriodDetails extends StudentPeriodBase {
   classId: string;
   course: string;
   matrix: string;
-  module: string;
+  currentModuleName: string;
   classesStartDate: string;
   enrollmentNumber: string;
-  disciplines: StudentPeriodDiscipline[];
+  modules: StudentPeriodModule[];
 }
 
 export interface StudentPeriodMatrixModuleDiscipline {

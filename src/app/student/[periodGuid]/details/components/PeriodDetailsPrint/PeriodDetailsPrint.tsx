@@ -1,7 +1,7 @@
 import { StudentPeriodDetails } from '@athena-types/studentPeriod';
 import { Print } from '@components/print';
 import { formatGradeValue } from '@helpers/utils';
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 const InfoContainer = styled.div`
@@ -90,7 +90,7 @@ const PeriodDetailsPrint: React.FC<PeriodDetailsPrintProps> = forwardRef(
             </p>
 
             <p>
-              <strong>Módulo:</strong> {data.module}
+              <strong>Módulo:</strong> {data.currentModuleName}
             </p>
 
             <p>
@@ -108,14 +108,30 @@ const PeriodDetailsPrint: React.FC<PeriodDetailsPrintProps> = forwardRef(
             </thead>
 
             <tbody>
-              {data.disciplines.map((discipline) => (
-                <tr key={discipline.guid}>
-                  <td>{discipline.name}</td>
+              {data.modules.map(({ guid, name, disciplines }) => (
+                <React.Fragment key={guid}>
+                  <tr>
+                    <td
+                      colSpan={4}
+                      style={{
+                        fontWeight: 700,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {name}
+                    </td>
+                  </tr>
 
-                  <td>{discipline.totalAbsences}</td>
+                  {disciplines.map((discipline) => (
+                    <tr key={discipline.guid}>
+                      <td>{discipline.name}</td>
 
-                  <td>{formatGradeValue(discipline.finalGrade)}</td>
-                </tr>
+                      <td>{discipline.totalAbsences}</td>
+
+                      <td>{formatGradeValue(discipline.finalGrade)}</td>
+                    </tr>
+                  ))}
+                </React.Fragment>
               ))}
             </tbody>
           </Table>

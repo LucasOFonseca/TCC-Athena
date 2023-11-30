@@ -12,7 +12,7 @@ import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import styled from 'styled-components';
 import { PeriodDetailsPrint } from './components/PeriodDetailsPrint';
-import { PeriodDisciplinesTable } from './components/PeriodDisciplinesTable';
+import { PeriodModulesTable } from './components/PeriodModulesTable';
 
 const InfoContainer = styled.div`
   display: flex;
@@ -117,7 +117,7 @@ export default function StudentPeriodDetailsPage({
         </p>
 
         <p>
-          <strong>Módulo:</strong> {data?.module}
+          <strong>Módulo:</strong> {data?.currentModuleName}
         </p>
 
         <p>
@@ -142,7 +142,7 @@ export default function StudentPeriodDetailsPage({
         </div>
       </InfoContainer>
 
-      <PeriodDisciplinesTable disciplines={data?.disciplines ?? []} />
+      <PeriodModulesTable modules={data?.modules ?? []} />
     </>
   );
 }

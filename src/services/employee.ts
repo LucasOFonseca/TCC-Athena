@@ -9,6 +9,7 @@ import { GenericStatus } from '@athena-types/genericStatus';
 import { SuccessMessages } from '@athena-types/messages';
 import { PaginatedDataResponse } from '@athena-types/paginatedData';
 import { DisciplineSchedule } from '@athena-types/period';
+import { SchedulesByShift } from '@athena-types/studentSchedule';
 import Api from './api';
 
 const baseUrl = '/employee';
@@ -23,6 +24,12 @@ async function getPaginated(
 
 async function getSchedules(guid: string): Promise<DisciplineSchedule[]> {
   return Api.get(`${baseUrl}/${guid}/schedules`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
+async function getEducatorSchedules(guid: string): Promise<SchedulesByShift> {
+  return Api.get(`${baseUrl}/${guid}/educator/schedules`, {
     headers: { authHeader: true },
   }).then((res) => res.data);
 }
@@ -77,6 +84,7 @@ async function resetPassword(guid: string): Promise<Employee> {
 export const employeeService = {
   getPaginated,
   getSchedules,
+  getEducatorSchedules,
   getPeriods,
   getDisciplinesByPeriod,
   create,
