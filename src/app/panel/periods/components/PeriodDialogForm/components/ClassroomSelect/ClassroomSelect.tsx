@@ -11,10 +11,14 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 
 interface ClassroomSelectProps {
+  disabled: boolean;
   form: FormInstance<PeriodForm>;
 }
 
-export const ClassroomSelect: React.FC<ClassroomSelectProps> = ({ form }) => {
+export const ClassroomSelect: React.FC<ClassroomSelectProps> = ({
+  disabled,
+  form,
+}) => {
   const vacancies = Form.useWatch('vacancies', form);
 
   const { getFieldValue, setFieldValue } = form;
@@ -63,6 +67,7 @@ export const ClassroomSelect: React.FC<ClassroomSelectProps> = ({ form }) => {
     <Form.Item label="Sala" name="classroomGuid">
       <Select
         showSearch
+        disabled={disabled}
         size="large"
         placeholder="Sala 01"
         optionFilterProp="children"

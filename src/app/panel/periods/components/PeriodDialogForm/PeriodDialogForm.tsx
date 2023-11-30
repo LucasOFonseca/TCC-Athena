@@ -373,6 +373,10 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
                   ]}
                 >
                   <DatePicker
+                    disabled={
+                      periodToEdit?.status === PeriodStatus.openForEnrollment ||
+                      periodToEdit?.status === PeriodStatus.inProgress
+                    }
                     size="large"
                     format="DD/MM/YYYY"
                     placeholder="Início"
@@ -400,6 +404,7 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
                   ]}
                 >
                   <DatePicker
+                    disabled={periodToEdit?.status === PeriodStatus.inProgress}
                     size="large"
                     format="DD/MM/YYYY"
                     placeholder="Término"
@@ -437,6 +442,10 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
 
             <Form.Item label="Vagas" name="vacancies">
               <InputNumber
+                disabled={
+                  periodToEdit?.status === PeriodStatus.openForEnrollment ||
+                  periodToEdit?.status === PeriodStatus.inProgress
+                }
                 size="large"
                 min={1}
                 max={100}
@@ -446,10 +455,22 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
             </Form.Item>
 
             <StyledSpace>
-              <ClassroomSelect form={form} />
+              <ClassroomSelect
+                disabled={
+                  periodToEdit?.status === PeriodStatus.notStarted ||
+                  periodToEdit?.status === PeriodStatus.openForEnrollment ||
+                  periodToEdit?.status === PeriodStatus.inProgress
+                }
+                form={form}
+              />
 
               <Form.Item label="Turma" name="classId">
                 <Select
+                  disabled={
+                    periodToEdit?.status === PeriodStatus.notStarted ||
+                    periodToEdit?.status === PeriodStatus.openForEnrollment ||
+                    periodToEdit?.status === PeriodStatus.inProgress
+                  }
                   size="large"
                   optionFilterProp="children"
                   options={classIds.map((id) => ({
@@ -463,11 +484,34 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
         )}
 
         <div style={{ display: editScheduleOnly ? 'none' : 'contents' }}>
-          <ShiftSelect form={form} />
+          <ShiftSelect
+            disabled={
+              periodToEdit?.status === PeriodStatus.notStarted ||
+              periodToEdit?.status === PeriodStatus.openForEnrollment ||
+              periodToEdit?.status === PeriodStatus.inProgress
+            }
+            form={form}
+          />
 
-          <MatrixSelect form={form} />
+          <MatrixSelect
+            disabled={
+              periodToEdit?.status === PeriodStatus.notStarted ||
+              periodToEdit?.status === PeriodStatus.openForEnrollment ||
+              periodToEdit?.status === PeriodStatus.inProgress
+            }
+            form={form}
+          />
 
-          {selectedMatrix && <MatrixModuleSelect form={form} />}
+          {selectedMatrix && (
+            <MatrixModuleSelect
+              disabled={
+                periodToEdit?.status === PeriodStatus.notStarted ||
+                periodToEdit?.status === PeriodStatus.openForEnrollment ||
+                periodToEdit?.status === PeriodStatus.inProgress
+              }
+              form={form}
+            />
+          )}
         </div>
 
         {selectedMatrixModule && (

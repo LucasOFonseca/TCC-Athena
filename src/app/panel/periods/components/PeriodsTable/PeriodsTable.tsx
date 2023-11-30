@@ -150,7 +150,8 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
                       onClick={() =>
                         onSeeEnrollments(
                           record.guid,
-                          record.status !== PeriodStatus.openForEnrollment
+                          record.status !== PeriodStatus.openForEnrollment &&
+                            record.status !== PeriodStatus.inProgress
                         )
                       }
                     >
@@ -177,7 +178,10 @@ export const PeriodsTable: React.FC<PeriodsTableProps> = ({
 
                   <Tooltip placement="bottom" title="Editar">
                     <Button
-                      disabled={record.status !== PeriodStatus.draft}
+                      disabled={
+                        record.status === PeriodStatus.finished ||
+                        record.status === PeriodStatus.canceled
+                      }
                       size="middle"
                       shape="circle"
                       type="text"

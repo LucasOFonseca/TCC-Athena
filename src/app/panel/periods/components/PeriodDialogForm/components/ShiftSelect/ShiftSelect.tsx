@@ -10,10 +10,11 @@ import { Form, FormInstance, Select } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface ShiftSelectProps {
+  disabled: boolean;
   form: FormInstance<PeriodForm>;
 }
 
-export const ShiftSelect: React.FC<ShiftSelectProps> = ({ form }) => {
+export const ShiftSelect: React.FC<ShiftSelectProps> = ({ disabled, form }) => {
   const { getFieldValue, setFieldValue } = form;
 
   const [shift, setShift] = useState<Shift>();
@@ -35,6 +36,7 @@ export const ShiftSelect: React.FC<ShiftSelectProps> = ({ form }) => {
   return (
     <Form.Item label="Turno" name="shiftGuid">
       <Select
+        disabled={disabled}
         size="large"
         placeholder="Matutino"
         optionFilterProp="children"

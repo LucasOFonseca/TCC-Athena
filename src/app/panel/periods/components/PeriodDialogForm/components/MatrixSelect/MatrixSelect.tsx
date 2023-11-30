@@ -10,10 +10,14 @@ import debounce from 'lodash.debounce';
 import { useCallback, useState } from 'react';
 
 interface MatrixSelectProps {
+  disabled: boolean;
   form: FormInstance<PeriodForm>;
 }
 
-export const MatrixSelect: React.FC<MatrixSelectProps> = ({ form }) => {
+export const MatrixSelect: React.FC<MatrixSelectProps> = ({
+  disabled,
+  form,
+}) => {
   const { setFieldValue } = form;
 
   const [search, setSearch] = useState('');
@@ -46,6 +50,7 @@ export const MatrixSelect: React.FC<MatrixSelectProps> = ({ form }) => {
     >
       <Select
         showSearch
+        disabled={disabled}
         size="large"
         placeholder="Selecione a matriz a ser ofertada"
         optionFilterProp="children"

@@ -6,10 +6,12 @@ import { Form, FormInstance, Select } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface MatrixModuleSelectProps {
+  disabled: boolean;
   form: FormInstance<PeriodForm>;
 }
 
 export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
+  disabled,
   form,
 }) => {
   const { setFieldValue, getFieldValue } = form;
@@ -73,6 +75,7 @@ export const MatrixModuleSelect: React.FC<MatrixModuleSelectProps> = ({
     >
       <Select
         showSearch
+        disabled={disabled}
         size="large"
         placeholder="Selecione o módulo a ser ofertado"
         optionFilterProp="children"
