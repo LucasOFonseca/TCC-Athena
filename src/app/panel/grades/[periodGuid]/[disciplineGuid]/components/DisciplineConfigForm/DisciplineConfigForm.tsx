@@ -108,6 +108,7 @@ export const DisciplineConfigForm: React.FC<DisciplineConfigFormProps> = ({
                       <Form.Item required name={[field.name, 'maxValue']}>
                         <InputNumber
                           placeholder="Valor"
+                          step={0.1}
                           min={0.1}
                           max={10}
                           decimalSeparator=","

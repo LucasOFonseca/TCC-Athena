@@ -101,6 +101,8 @@ export const StudentGradesForm: React.FC<StudentGradesFormProps> = ({
         grades.map((grade) => ({
           ...grade,
           gradeItems: config.gradeItems.map((item) => ({
+            guid: grade.gradeItems.find((i) => i.gradeItemGuid === item.guid)
+              ?.guid,
             name: item.name,
             gradeItemGuid: item.guid as string,
             maxValue: item.maxValue,

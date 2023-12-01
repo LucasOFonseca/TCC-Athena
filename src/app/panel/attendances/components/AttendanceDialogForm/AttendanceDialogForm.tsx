@@ -23,6 +23,27 @@ import Swal from 'sweetalert2';
 import { StudentsList } from './components/StudentsList';
 
 const StyledModal = styled(Modal)`
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 32px);
+    padding: 0;
+
+    .ant-modal-title {
+      padding: 24px 16px 0;
+    }
+
+    .ant-modal-body {
+      padding: 8px 16px;
+      overflow-y: auto;
+    }
+
+    .ant-modal-footer {
+      padding: 8px 16px 16px;
+      margin-top: 0;
+    }
+  }
+
   @media (max-width: 600px) {
     max-width: unset;
     width: 100% !important;

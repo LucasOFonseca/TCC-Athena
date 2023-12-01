@@ -59,11 +59,7 @@ export const EmployeeSelect: React.FC<EmployeeSelectProps> = ({
           name: foundEmployee.name,
         });
       }
-
-      return;
     }
-
-    onChange(undefined);
   }, [employee, data]);
 
   return (
@@ -74,7 +70,7 @@ export const EmployeeSelect: React.FC<EmployeeSelectProps> = ({
         placeholder="Selecione o professor"
         optionFilterProp="children"
         loading={isLoading}
-        value={employee?.name}
+        value={employee?.guid}
         onChange={(value) => {
           const foundEmployee = data?.data?.find((c) => c.guid === value);
 

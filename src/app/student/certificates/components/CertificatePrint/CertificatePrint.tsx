@@ -74,7 +74,7 @@ export const CertificatePrint: React.FC<CertificatePrintProps> = ({
       </i>
 
       <p>
-        portador do CPF{' '}
+        portador(a) do CPF{' '}
         <strong>
           {user?.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}
         </strong>

@@ -58,18 +58,34 @@ export const TableBody: React.FC<TableBodyProps> = ({ form }) => {
                           >
                             <InputNumber
                               size="middle"
+                              step={0.1}
                               min={0}
                               max={
                                 grades[gradeIndex].gradeItems[index].maxValue
                               }
                               style={{ width: 65 }}
                               decimalSeparator=","
-                              onBlur={() => {
+                              onBlur={({ target: { value } }) => {
+                                const numberValue = parseFloat(
+                                  Number(
+                                    value
+                                      .replace(',', '.')
+                                      .replace(/[^\d.]/gi, '')
+                                  ).toFixed(1)
+                                );
+                                const gradeItems =
+                                  grades[gradeIndex].gradeItems;
+
+                                gradeItems[index].value =
+                                  numberValue >
+                                  grades[gradeIndex].gradeItems[index].maxValue
+                                    ? grades[gradeIndex].gradeItems[index]
+                                        .maxValue
+                                    : numberValue;
+
                                 setFieldValue(
                                   ['grades', gradeIndex, 'finalValue'],
-                                  calculateFinalGrade(
-                                    grades[gradeIndex].gradeItems
-                                  )
+                                  calculateFinalGrade(gradeItems)
                                 );
                               }}
                             />

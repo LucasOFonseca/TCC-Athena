@@ -77,6 +77,7 @@ export const PeriodModulesTable: React.FC<PeriodModulesTableProps> = ({
 
                   <Dropdown
                     arrow
+                    disabled={discipline.grades.length === 0}
                     placement="bottomCenter"
                     dropdownRender={() => (
                       <div
@@ -100,14 +101,16 @@ export const PeriodModulesTable: React.FC<PeriodModulesTableProps> = ({
                       <span style={{ position: 'relative' }}>
                         {formatGradeValue(discipline.finalGrade)}
 
-                        <InfoOutlined
-                          style={{
-                            position: 'absolute',
-                            top: -4,
-                            right: -12,
-                            color: '#1677ff',
-                          }}
-                        />
+                        {discipline.finalGrade > 0 && (
+                          <InfoOutlined
+                            style={{
+                              position: 'absolute',
+                              top: -4,
+                              right: -12,
+                              color: '#1677ff',
+                            }}
+                          />
+                        )}
                       </span>
                     </td>
                   </Dropdown>

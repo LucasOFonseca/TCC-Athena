@@ -20,6 +20,17 @@ export const SchedulesTable: React.FC<SchedulesTableProps> = ({
       {schedules.morning && (
         <SchedulesByShiftTable title="Matutino" schedules={schedules.morning} />
       )}
+
+      {schedules.afternoon && (
+        <SchedulesByShiftTable
+          title="Vespertino"
+          schedules={schedules.afternoon}
+        />
+      )}
+
+      {schedules.evening && (
+        <SchedulesByShiftTable title="Noturno" schedules={schedules.evening} />
+      )}
     </Container>
   );
 };

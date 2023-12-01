@@ -48,9 +48,7 @@ export const ClientSideAppProvider: React.FC<{
 
         <ToastContainer limit={3} position="bottom-center" />
         <FullScreenLoader />
-        <ReactQueryDevtools
-          toggleButtonProps={{ style: { display: 'none' } }}
-        />
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </ConfigProvider>
   );

@@ -144,8 +144,8 @@ export const ClassSchedulesDialogForm: React.FC<
           status: statusToShow || status,
           classNumber,
           dayOfWeek,
-          startTime: getFieldValue('startTime').format(),
-          endTime: getFieldValue('endTime').format(),
+          startTime: getFieldValue('startTime').toISOString(),
+          endTime: getFieldValue('endTime').toISOString(),
           shiftGuid: shift.guid,
         });
       });
@@ -165,8 +165,8 @@ export const ClassSchedulesDialogForm: React.FC<
             schedulesToCreate.push({
               classNumber,
               dayOfWeek,
-              startTime: startTime.format(),
-              endTime: endTime.format(),
+              startTime: startTime.toISOString(),
+              endTime: endTime.toISOString(),
               shiftGuid: shift.guid,
             });
           });
