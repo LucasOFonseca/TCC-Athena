@@ -164,9 +164,13 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
     onSuccess: (data) => {
       setFieldsValue({
         ...data,
-        deadline: dayjs(data.deadline),
-        enrollmentEndDate: dayjs(data.enrollmentEndDate),
-        enrollmentStartDate: dayjs(data.enrollmentStartDate),
+        deadline: data.deadline ? dayjs(data.deadline) : undefined,
+        enrollmentEndDate: data.enrollmentEndDate
+          ? dayjs(data.enrollmentEndDate)
+          : undefined,
+        enrollmentStartDate: data.enrollmentStartDate
+          ? dayjs(data.enrollmentStartDate)
+          : undefined,
       });
     },
     staleTime: Infinity,
@@ -305,9 +309,15 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
     if (periodToEdit && periodToEdit.guid === periodToEditGuid) {
       setFieldsValue({
         ...periodToEdit,
-        deadline: dayjs(periodToEdit.deadline),
-        enrollmentEndDate: dayjs(periodToEdit.enrollmentEndDate),
-        enrollmentStartDate: dayjs(periodToEdit.enrollmentStartDate),
+        deadline: periodToEdit.deadline
+          ? dayjs(periodToEdit.deadline)
+          : undefined,
+        enrollmentEndDate: periodToEdit.enrollmentEndDate
+          ? dayjs(periodToEdit.enrollmentEndDate)
+          : undefined,
+        enrollmentStartDate: periodToEdit.enrollmentStartDate
+          ? dayjs(periodToEdit.enrollmentStartDate)
+          : undefined,
       });
     }
 

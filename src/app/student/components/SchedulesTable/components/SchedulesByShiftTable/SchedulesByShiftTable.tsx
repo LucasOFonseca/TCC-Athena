@@ -28,7 +28,7 @@ export const SchedulesByShiftTable: React.FC<SchedulesByShiftTableProps> = ({
   schedules,
 }) => {
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', border: '1px solid #f0f0f0' }}>
       <Title>
         <h6>{title}</h6>
       </Title>

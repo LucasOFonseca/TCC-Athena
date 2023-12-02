@@ -93,6 +93,7 @@ export const ModuleDisciplineSelect: React.FC<ModuleDisciplineSelectProps> = ({
           setDiscipline({
             guid: foundDiscipline?.guid ?? '',
             workload: foundDiscipline?.workload ?? 0,
+            weeklyClasses: foundDiscipline?.weeklyClasses ?? 0,
             name: value,
           });
           setFieldValue(

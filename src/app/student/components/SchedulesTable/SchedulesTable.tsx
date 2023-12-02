@@ -4,8 +4,9 @@ import { SchedulesByShiftTable } from './components/SchedulesByShiftTable';
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-top: 16px;
-  border: 1px solid #f0f0f0;
 `;
 
 interface SchedulesTableProps {
