@@ -371,6 +371,12 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
                   rules={[
                     () => ({
                       validator(_, value) {
+                        if (
+                          !value ||
+                          periodToEdit?.status === PeriodStatus.inProgress
+                        )
+                          return Promise.resolve();
+
                         const isInvalid = dayjs(value).isBefore(new Date());
 
                         if (isInvalid) {
@@ -400,7 +406,11 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
                   rules={[
                     () => ({
                       validator(_, value) {
-                        if (!value) return Promise.resolve();
+                        if (
+                          !value ||
+                          periodToEdit?.status === PeriodStatus.inProgress
+                        )
+                          return Promise.resolve();
 
                         const isInvalid = dayjs(value).isBefore(new Date());
 
@@ -467,7 +477,6 @@ export const PeriodDialogForm: React.FC<PeriodDialogFormProps> = ({
             <StyledSpace>
               <ClassroomSelect
                 disabled={
-                  periodToEdit?.status === PeriodStatus.notStarted ||
                   periodToEdit?.status === PeriodStatus.openForEnrollment ||
                   periodToEdit?.status === PeriodStatus.inProgress
                 }
