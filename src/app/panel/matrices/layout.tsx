@@ -2,10 +2,5 @@ export const metadata = {
   title: 'Matrizes',
 };
 
-export default async function MatricesLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return children;
-}
+// eslint-disable-next-line
+export default ({ children }: { children: React.ReactNode }) => children;

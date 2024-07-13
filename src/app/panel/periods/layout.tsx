@@ -2,10 +2,5 @@ export const metadata = {
   title: 'Períodos',
 };
 
-export default async function PeriodsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return children;
-}
+// eslint-disable-next-line
+export default ({ children }: { children: React.ReactNode }) => children;

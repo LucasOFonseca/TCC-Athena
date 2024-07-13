@@ -2,10 +2,5 @@ export const metadata = {
   title: 'Alunos',
 };
 
-export default async function StudentsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return children;
-}
+// eslint-disable-next-line
+export default ({ children }: { children: React.ReactNode }) => children;
